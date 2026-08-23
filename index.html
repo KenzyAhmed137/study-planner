@@ -229,4 +229,42 @@ footer a { color: var(--header-text); text-decoration: underline; }
       <button class="btn" onclick="addSubject()">➕ إضافة</button>
     </div>
     <div class="subject-grid" id="subjectsList"></div>
+  </div><!-- SCHEDULE -->
+  <div id="schedule" class="section">
+    <h2>📅 جدول المذاكرة الأسبوعي</h2>
+    <p style="margin-bottom: 16px; color: var(--text-muted);">اضغط على أي خلية لإضافة أو تعديل المادة</p>
+    <div style="overflow-x: auto;">
+      <table class="schedule-table">
+        <thead><tr><th>اليوم / الوقت</th><th>8-10 ص</th><th>10-12 ص</th><th>12-2 م</th><th>2-4 م</th><th>4-6 م</th><th>6-8 م</th></tr></thead>
+        <tbody id="scheduleBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div id="tasks" class="section">
+    <h2>✅ قائمة المهام</h2>
+    <div class="audio-toggle">
+      <span>🔔 التنبيهات الصوتية:</span>
+      <div class="toggle-switch" id="audioToggle" onclick="toggleAudio()"></div>
+    </div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+      <input type="text" id="taskName" placeholder="اسم المهمة" style="flex: 1; min-width: 150px;">
+      <select id="taskPriority" style="width: 120px;"><option value="high">🔴 عالية</option><option value="medium" selected>🟠 متوسطة</option><option value="low">🟢 منخفضة</option></select>
+      <input type="date" id="taskDue" style="width: 150px;">
+      <button class="btn" onclick="addTask()">➕ إضافة</button>
+    </div>
+    <div id="tasksList"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div id="progress" class="section">
+    <h2>📈 متابعة التقدم</h2>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+      <input type="text" id="progressSubject" placeholder="اسم المادة" style="flex: 1; min-width: 150px;">
+      <input type="number" id="progressPercent" placeholder="نسبة الإنجاز %" min="0" max="100" style="width: 150px;">
+      <button class="btn" onclick="addProgress()">➕ تحديث</button>
+    </div>
+    <div class="chart-container" id="chartContainer"></div>
+    <div class="progress-container" id="progressList"></div>
   </div>
