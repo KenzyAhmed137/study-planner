@@ -371,3 +371,418 @@ footer a { color: var(--header-text); text-decoration: underline; }
   <p>تم التطوير بواسطة <a href="https://github.com/KenzyAhmed137" target="_blank">Kenzy Ahmed</a> 💜</p>
   <p style="margin-top: 8px; font-size: 0.8rem;">Student Study Planner v3.0 © 2026</p>
 </footer>
+  <script>
+// ===================== DATA =====================
+let subjects = JSON.parse(localStorage.getItem('ssp_subjects')) || [];
+let tasks = JSON.parse(localStorage.getItem('ssp_tasks')) || [];
+let progress = JSON.parse(localStorage.getItem('ssp_progress')) || [];
+let schedule = JSON.parse(localStorage.getItem('ssp_schedule')) || {};
+let notes = JSON.parse(localStorage.getItem('ssp_notes')) || [];
+let examDate = localStorage.getItem('ssp_examDate') || '';
+let darkMode = localStorage.getItem('ssp_darkMode') === 'true';
+let audioEnabled = localStorage.getItem('ssp_audio') !== 'false';
+let pomoCycles = parseInt(localStorage.getItem('ssp_pomoCycles') || '0');
+
+if (darkMode) {
+  document.body.classList.add('dark-mode');
+  document.getElementById('darkToggle').classList.add('on');
+}
+if (audioEnabled) {
+  document.getElementById('audioToggle').classList.add('on');
+  document.getElementById('settingsAudioToggle').classList.add('on');
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'dashboard') updateDashboard();
+  if (id === 'subjects') renderSubjects();
+  if (id === 'schedule') renderSchedule();
+  if (id === 'tasks') renderTasks();
+  if (id === 'progress') { renderProgress(); renderChart(); }
+  if (id === 'notes') renderNotes();
+}
+
+function openSettings() { document.getElementById('settingsPanel').classList.add('active'); }
+function closeSettings() { document.getElementById('settingsPanel').classList.remove('active'); }
+
+function toggleDarkMode() {
+  darkMode = !darkMode;
+  localStorage.setItem('ssp_darkMode', darkMode);
+  document.body.classList.toggle('dark-mode', darkMode);
+  document.getElementById('darkToggle').classList.toggle('on', darkMode);
+}
+
+function toggleAudio() {
+  audioEnabled = !audioEnabled;
+  localStorage.setItem('ssp_audio', audioEnabled);
+  document.getElementById('audioToggle').classList.toggle('on', audioEnabled);
+  document.getElementById('settingsAudioToggle').classList.toggle('on', audioEnabled);
+}
+
+function toggleAudioFromSettings() {
+  audioEnabled = !audioEnabled;
+  localStorage.setItem('ssp_audio', audioEnabled);
+  document.getElementById('audioToggle').classList.toggle('on', audioEnabled);
+  document.getElementById('settingsAudioToggle').classList.toggle('on', audioEnabled);
+}
+
+function clearAllData() {
+  if (!confirm('هل أنتِ متأكدة من مسح جميع البيانات؟ لا يمكن التراجع!')) return;
+  subjects = []; tasks = []; progress = []; schedule = {}; notes = []; examDate = ''; pomoCycles = 0;
+  localStorage.removeItem('ssp_subjects'); localStorage.removeItem('ssp_tasks');
+  localStorage.removeItem('ssp_progress'); localStorage.removeItem('ssp_schedule');
+  localStorage.removeItem('ssp_examDate'); localStorage.removeItem('ssp_notes');
+  localStorage.removeItem('ssp_pomoCycles');
+  updateDashboard(); renderSubjects(); renderSchedule(); renderTasks(); renderProgress(); renderNotes(); renderChart();
+  alert('✅ تم مسح جميع البيانات');
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ===================== AUDIO =====================
+function playBeep() {
+  if (!audioEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 800;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.5);
+  } catch(e) {}
+}
+
+function playAlarm() {
+  if (!audioEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    for (let i = 0; i < 3; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 600 + i * 200;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.3);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.3 + 0.3);
+      osc.start(ctx.currentTime + i * 0.3);
+      osc.stop(ctx.currentTime + i * 0.3 + 0.3);
+    }
+  } catch(e) {}
+}
+
+// ===================== DASHBOARD =====================
+function updateDashboard() {
+  document.getElementById('statSubjects').textContent = subjects.length;
+  document.getElementById('statTasks').textContent = tasks.length;
+  const completed = tasks.filter(t => t.done).length;
+  document.getElementById('statCompleted').textContent = completed;
+  const pct = tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0;
+  document.getElementById('statProgress').textContent = pct + '%';
+
+  if (examDate) {
+    document.getElementById('examDate').value = examDate;
+    const days = Math.ceil((new Date(examDate) - new Date()) / (1000 * 60 * 60 * 24));
+    document.getElementById('examCountdown').textContent = days > 0 ? '⏰ متبقي ' + days + ' يوم على الامتحان' : days === 0 ? '🎉 الامتحان اليوم! بالتوفيق!' : '';
+  } else { document.getElementById('examCountdown').textContent = ''; }
+
+  const upcoming = tasks.filter(t => !t.done && t.due).sort((a, b) => new Date(a.due) - new Date(b.due)).slice(0, 3);
+  const upDiv = document.getElementById('upcomingTasks');
+  if (upcoming.length === 0) {
+    upDiv.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد مهام قريبة 🎉</p>';
+  } else {
+    upDiv.innerHTML = upcoming.map(t => {
+      const daysLeft = Math.ceil((new Date(t.due) - new Date()) / (1000 * 60 * 60 * 24));
+      const urgent = daysLeft <= 1 ? 'color:var(--danger); font-weight:600;' : daysLeft <= 3 ? 'color:var(--warning);' : '';
+      return '<p style="font-size:0.9rem; margin-bottom:6px;">📌 ' + escapeHtml(t.name) + ' <span style="' + urgent + '">(' + (daysLeft > 0 ? 'متبقي ' + daysLeft + ' يوم' : 'متأخرة!') + ')</span></p>';
+    }).join('');
+  }
+  const urgentTasks = tasks.filter(t => !t.done && t.due && Math.ceil((new Date(t.due) - new Date()) / (1000 * 60 * 60 * 24)) <= 1);
+  if (urgentTasks.length > 0) playBeep();
+}
+
+function saveExamDate() {
+  examDate = document.getElementById('examDate').value;
+  localStorage.setItem('ssp_examDate', examDate);
+  updateDashboard();
+}
+
+// ===================== SUBJECTS =====================
+let editingSubjectIndex = null;
+
+function renderSubjects() {
+  const list = document.getElementById('subjectsList');
+  if (subjects.length === 0) {
+    list.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد مواد مضافة بعد. أضيفي مادتك الأولى! 📚</p>';
+    return;
+  }
+  list.innerHTML = subjects.map((s, i) => `
+    <div class="subject-card">
+      <div class="subject-actions">
+        <button class="action-btn" onclick="editSubject(${i})" title="تعديل">✏️</button>
+        <button class="action-btn delete" onclick="deleteSubject(${i})" title="حذف">🗑️</button>
+      </div>
+      <h3>${escapeHtml(s.name)}</h3>
+      <div class="hours">⏱️ ${s.hours} ساعة/أسبوع</div>
+    </div>
+  `).join('');
+}
+
+function addSubject() {
+  const nameInput = document.getElementById('subjectName');
+  const hoursInput = document.getElementById('subjectHours');
+  const name = nameInput.value.trim();
+  const hours = hoursInput.value;
+  if (!name) return alert('أدخلي اسم المادة');
+  if (editingSubjectIndex !== null) {
+    subjects[editingSubjectIndex] = { name, hours: hours || 0 };
+    editingSubjectIndex = null;
+    document.querySelector('#subjects button[onclick="addSubject()"]').textContent = '➕ إضافة';
+  } else {
+    subjects.push({ name, hours: hours || 0 });
+  }
+  localStorage.setItem('ssp_subjects', JSON.stringify(subjects));
+  nameInput.value = ''; hoursInput.value = '';
+  renderSubjects(); updateDashboard();
+}
+
+function editSubject(i) {
+  const s = subjects[i];
+  document.getElementById('subjectName').value = s.name;
+  document.getElementById('subjectHours').value = s.hours;
+  editingSubjectIndex = i;
+  document.querySelector('#subjects button[onclick="addSubject()"]').textContent = '💾 حفظ التعديل';
+  document.getElementById('subjectName').focus();
+}
+
+function deleteSubject(i) {
+  if (!confirm('هل تريدين حذف "' + subjects[i].name + '"؟')) return;
+  subjects.splice(i, 1);
+  if (editingSubjectIndex === i) {
+    editingSubjectIndex = null;
+    document.getElementById('subjectName').value = '';
+    document.getElementById('subjectHours').value = '';
+    document.querySelector('#subjects button[onclick="addSubject()"]').textContent = '➕ إضافة';
+  }
+  localStorage.setItem('ssp_subjects', JSON.stringify(subjects));
+  renderSubjects(); updateDashboard();
+}// ===================== SCHEDULE =====================
+const days = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+const times = ['8-10', '10-12', '12-2', '2-4', '4-6', '6-8'];
+let currentCell = null;
+
+function renderSchedule() {
+  const tbody = document.getElementById('scheduleBody');
+  tbody.innerHTML = days.map((day, dIdx) => `
+    <tr>
+      <td style="font-weight:600; background:var(--accent-dark); color:var(--header-text); font-size:0.85rem;">${day}</td>
+      ${times.map((time, tIdx) => {
+        const key = dIdx + '-' + tIdx;
+        const val = schedule[key] || '';
+        return '<td class="' + (val ? 'filled' : '') + '" onclick="openScheduleModal(\'' + key + '\')">' + escapeHtml(val) + '</td>';
+      }).join('')}
+    </tr>
+  `).join('');
+}
+
+function openScheduleModal(key) {
+  currentCell = key;
+  document.getElementById('modalSubject').value = schedule[key] || '';
+  document.getElementById('scheduleModal').classList.add('active');
+}
+function closeModal() { document.getElementById('scheduleModal').classList.remove('active'); currentCell = null; }
+
+function saveScheduleCell() {
+  const val = document.getElementById('modalSubject').value.trim();
+  if (val) schedule[currentCell] = val; else delete schedule[currentCell];
+  localStorage.setItem('ssp_schedule', JSON.stringify(schedule));
+  closeModal(); renderSchedule();
+}
+
+function deleteScheduleCell() {
+  delete schedule[currentCell];
+  localStorage.setItem('ssp_schedule', JSON.stringify(schedule));
+  closeModal(); renderSchedule();
+}
+
+// ===================== TASKS =====================
+let editingTaskIndex = null;
+
+function renderTasks() {
+  const list = document.getElementById('tasksList');
+  if (tasks.length === 0) {
+    list.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد مهام. أضيفي مهمتك الأولى! ✅</p>';
+    return;
+  }
+  list.innerHTML = tasks.map((t, i) => `
+    <div class="task-item ${t.done ? 'completed' : ''}">
+      <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${i})">
+      <span class="task-text">${escapeHtml(t.name)}</span>
+      <span class="task-priority priority-${t.priority}">${t.priority === 'high' ? 'عالية' : t.priority === 'medium' ? 'متوسطة' : 'منخفضة'}</span>
+      ${t.due ? '<span class="task-due">📅 ' + t.due + '</span>' : ''}
+      <div class="task-actions">
+        <button class="btn btn-icon btn-secondary" onclick="editTask(${i})" title="تعديل">✏️</button>
+        <button class="btn btn-icon" style="background:var(--danger);" onclick="deleteTask(${i})" title="حذف">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addTask() {
+  const nameInput = document.getElementById('taskName');
+  const priInput = document.getElementById('taskPriority');
+  const dueInput = document.getElementById('taskDue');
+  const name = nameInput.value.trim();
+  const priority = priInput.value;
+  const due = dueInput.value;
+  if (!name) return alert('أدخلي اسم المهمة');
+  if (editingTaskIndex !== null) {
+    tasks[editingTaskIndex] = { ...tasks[editingTaskIndex], name, priority, due };
+    editingTaskIndex = null;
+    document.querySelector('#tasks button[onclick="addTask()"]').textContent = '➕ إضافة';
+  } else {
+    tasks.push({ name, priority, due, done: false });
+  }
+  localStorage.setItem('ssp_tasks', JSON.stringify(tasks));
+  nameInput.value = ''; dueInput.value = ''; priInput.value = 'medium';
+  renderTasks(); updateDashboard();
+}
+
+function editTask(i) {
+  const t = tasks[i];
+  document.getElementById('taskName').value = t.name;
+  document.getElementById('taskPriority').value = t.priority;
+  document.getElementById('taskDue').value = t.due || '';
+  editingTaskIndex = i;
+  document.querySelector('#tasks button[onclick="addTask()"]').textContent = '💾 حفظ التعديل';
+  document.getElementById('taskName').focus();
+}
+
+function toggleTask(i) {
+  tasks[i].done = !tasks[i].done;
+  localStorage.setItem('ssp_tasks', JSON.stringify(tasks));
+  renderTasks(); updateDashboard();
+}
+
+function deleteTask(i) {
+  if (!confirm('هل تريدين حذف هذه المهمة؟')) return;
+  tasks.splice(i, 1);
+  if (editingTaskIndex === i) {
+    editingTaskIndex = null;
+    document.getElementById('taskName').value = '';
+    document.getElementById('taskDue').value = '';
+    document.querySelector('#tasks button[onclick="addTask()"]').textContent = '➕ إضافة';
+  }
+  localStorage.setItem('ssp_tasks', JSON.stringify(tasks));
+  renderTasks(); updateDashboard();
+}
+
+// ===================== PROGRESS + CHART =====================
+let editingProgressIndex = null;
+
+function renderProgress() {
+  const list = document.getElementById('progressList');
+  if (progress.length === 0) {
+    list.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد بيانات تقدم. أضيفي مادة ونسبة إنجازها! 📈</p>';
+    return;
+  }
+  list.innerHTML = progress.map((p, i) => `
+    <div class="progress-item">
+      <div class="progress-header">
+        <span class="progress-label">${escapeHtml(p.subject)}</span>
+        <div class="progress-actions">
+          <button class="btn btn-icon btn-secondary" onclick="editProgress(${i})" title="تعديل">✏️</button>
+          <button class="btn btn-icon" style="background:var(--danger);" onclick="deleteProgress(${i})" title="حذف">🗑️</button>
+        </div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${p.percent}%; background: ${getProgressColor(p.percent)};">${p.percent}%</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getProgressColor(p) {
+  if (p >= 80) return 'linear-gradient(90deg, #2ecc71, #27ae60)';
+  if (p >= 50) return 'linear-gradient(90deg, #f39c12, #e67e22)';
+  return 'linear-gradient(90deg, #e94560, #c0392b)';
+}
+
+function addProgress() {
+  const subInput = document.getElementById('progressSubject');
+  const pctInput = document.getElementById('progressPercent');
+  const subject = subInput.value.trim();
+  const percent = parseInt(pctInput.value) || 0;
+  if (!subject) return alert('أدخلي اسم المادة');
+  if (editingProgressIndex !== null) {
+    progress[editingProgressIndex] = { subject, percent };
+    editingProgressIndex = null;
+    document.querySelector('#progress button[onclick="addProgress()"]').textContent = '➕ تحديث';
+  } else {
+    const idx = progress.findIndex(x => x.subject === subject);
+    if (idx >= 0) progress[idx].percent = percent;
+    else progress.push({ subject, percent });
+  }
+  localStorage.setItem('ssp_progress', JSON.stringify(progress));
+  subInput.value = ''; pctInput.value = '';
+  renderProgress(); renderChart();
+}
+
+function editProgress(i) {
+  const p = progress[i];
+  document.getElementById('progressSubject').value = p.subject;
+  document.getElementById('progressPercent').value = p.percent;
+  editingProgressIndex = i;
+  document.querySelector('#progress button[onclick="addProgress()"]').textContent = '💾 حفظ التعديل';
+  document.getElementById('progressSubject').focus();
+}
+
+function deleteProgress(i) {
+  if (!confirm('هل تريدين حذف تقدم "' + progress[i].subject + '"؟')) return;
+  progress.splice(i, 1);
+  if (editingProgressIndex === i) {
+    editingProgressIndex = null;
+    document.getElementById('progressSubject').value = '';
+    document.getElementById('progressPercent').value = '';
+    document.querySelector('#progress button[onclick="addProgress()"]').textContent = '➕ تحديث';
+  }
+  localStorage.setItem('ssp_progress', JSON.stringify(progress));
+  renderProgress(); renderChart();
+}
+
+function renderChart() {
+  const container = document.getElementById('chartContainer');
+  if (progress.length === 0) { container.innerHTML = ''; return; }
+  const w = 700, h = 280, pad = 50, barW = (w - pad * 2) / progress.length - 20;
+  const maxV = Math.max(...progress.map(p => p.percent), 100);
+  let svg = '<svg class="chart-svg" viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">';
+  svg += '<rect width="' + w + '" height="' + h + '" fill="none"/>';
+  for (let i = 0; i <= 5; i++) {
+    const y = pad + (h - pad * 2) * (1 - i / 5);
+    svg += '<line x1="' + pad + '" y1="' + y + '" x2="' + (w - pad) + '" y2="' + y + '" stroke="var(--border-color)" stroke-width="1"/>';
+    svg += '<text x="' + (pad - 10) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="var(--text-muted)">' + (i * 20) + '%</text>';
+  }
+  progress.forEach((p, i) => {
+    const x = pad + i * (barW + 20) + 10;
+    const barH = (p.percent / maxV) * (h - pad * 2);
+    const y = h - pad - barH;
+    const color = p.percent >= 80 ? '#2ecc71' : p.percent >= 50 ? '#f39c12' : '#e94560';
+    svg += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + barH + '" rx="6" fill="' + color + '" opacity="0.85"/>';
+    svg += '<text x="' + (x + barW / 2) + '" y="' + (y - 8) + '" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text-primary)">' + p.percent + '%</text>';
+    svg += '<text x="' + (x + barW / 2) + '" y="' + (h - pad + 18) + '" text-anchor="middle" font-size="11" fill="var(--text-secondary)">' + escapeHtml(p.subject.substring(0, 8)) + '</text>';
+  });
+  svg += '</svg>';
+  container.innerHTML = svg;
+    }
