@@ -786,3 +786,181 @@ function renderChart() {
   svg += '</svg>';
   container.innerHTML = svg;
     }
+    // ===================== POMODORO =====================
+let pomoTime = 25 * 60;
+let pomoInterval = null;
+let pomoRunning = false;
+let pomoMode = 'work';
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60).toString().padStart(2, '0');
+  const s = (sec % 60).toString().padStart(2, '0');
+  return m + ':' + s;
+}
+
+function updatePomoDisplay() {
+  document.getElementById('pomoTimer').textContent = formatTime(pomoTime);
+  const status = pomoMode === 'work' ? (pomoRunning ? '🍅 جاري المذاكرة...' : '🍅 جاهز للبدء') : '☕ وقت الراحة!';
+  document.getElementById('pomoStatus').textContent = status;
+  document.getElementById('pomoCycles').textContent = 'أنجزتي ' + pomoCycles + ' دورات اليوم';
+}
+
+function startPomodoro() {
+  if (pomoRunning) return;
+  pomoRunning = true;
+  updatePomoDisplay();
+  pomoInterval = setInterval(() => {
+    pomoTime--;
+    updatePomoDisplay();
+    if (pomoTime <= 0) {
+      clearInterval(pomoInterval);
+      pomoRunning = false;
+      playAlarm();
+      if (pomoMode === 'work') {
+        pomoCycles++;
+        localStorage.setItem('ssp_pomoCycles', pomoCycles);
+        pomoMode = 'break';
+        pomoTime = 5 * 60;
+        alert('🎉 أحسنتِ! انتهت جلسة المذاكرة. خذي راحة 5 دقائق!');
+      } else {
+        pomoMode = 'work';
+        pomoTime = 25 * 60;
+        alert('⏰ انتهت الراحة! استعدي للمذاكرة!');
+      }
+      updatePomoDisplay();
+    }
+  }, 1000);
+}
+
+function pausePomodoro() {
+  if (!pomoRunning) return;
+  clearInterval(pomoInterval);
+  pomoRunning = false;
+  updatePomoDisplay();
+}
+
+function resetPomodoro() {
+  clearInterval(pomoInterval);
+  pomoRunning = false;
+  pomoMode = 'work';
+  pomoTime = 25 * 60;
+  updatePomoDisplay();
+}
+
+// ===================== NOTES =====================
+let editingNoteIndex = null;
+
+function renderNotes() {
+  const list = document.getElementById('notesList');
+  if (notes.length === 0) {
+    list.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد ملاحظات. اكتبي ملاحظتك الأولى! 📝</p>';
+    return;
+  }
+  list.innerHTML = notes.slice().reverse().map((n, i) => {
+    const realIdx = notes.length - 1 - i;
+    return `
+    <div class="note-card">
+      <div class="note-actions">
+        <button class="action-btn" onclick="editNote(${realIdx})" title="تعديل">✏️</button>
+        <button class="action-btn delete" onclick="deleteNote(${realIdx})" title="حذف">🗑️</button>
+      </div>
+      <div class="note-date">📅 ${n.date}</div>
+      <div class="note-text">${escapeHtml(n.text)}</div>
+    </div>
+  `; }).join('');
+}
+
+function addNote() {
+  const textInput = document.getElementById('noteText');
+  const text = textInput.value.trim();
+  if (!text) return alert('اكتبي ملاحظة أولاً');
+  const date = new Date().toLocaleDateString('ar-EG');
+  if (editingNoteIndex !== null) {
+    notes[editingNoteIndex].text = text;
+    editingNoteIndex = null;
+    document.querySelector('#notes button[onclick="addNote()"]').textContent = '➕ إضافة ملاحظة';
+  } else {
+    notes.push({ text, date });
+  }
+  localStorage.setItem('ssp_notes', JSON.stringify(notes));
+  textInput.value = '';
+  renderNotes();
+}
+
+function editNote(i) {
+  document.getElementById('noteText').value = notes[i].text;
+  editingNoteIndex = i;
+  document.querySelector('#notes button[onclick="addNote()"]').textContent = '💾 حفظ التعديل';
+  document.getElementById('noteText').focus();
+}
+
+function deleteNote(i) {
+  if (!confirm('هل تريدين حذف هذه الملاحظة؟')) return;
+  notes.splice(i, 1);
+  if (editingNoteIndex === i) {
+    editingNoteIndex = null;
+    document.getElementById('noteText').value = '';
+    document.querySelector('#notes button[onclick="addNote()"]').textContent = '➕ إضافة ملاحظة';
+  }
+  localStorage.setItem('ssp_notes', JSON.stringify(notes));
+  renderNotes();
+    }// ===================== QUIZ BANKS =====================
+const quizBanks = {
+  math: [
+    { q: "ما هو حل المعادلة: 2x + 5 = 15؟", o: ["3", "5", "7", "10"], a: 1 },
+    { q: "ما هو محيط الدائرة التي نصف قطرها 7؟ (π ≈ 22/7)", o: ["22", "38", "44", "49"], a: 2 },
+    { q: "ما هو مجموع زوايا المضلع السداسي؟", o: ["540°", "720°", "900°", "1080°"], a: 1 },
+    { q: "إذا كان log₂(x) = 5، فما قيمة x؟", o: ["10", "16", "25", "32"], a: 3 },
+    { q: "ما هو المشتق الأول لـ f(x) = 3x² + 4x؟", o: ["6x + 4", "3x + 4", "6x² + 4", "x² + 4x"], a: 0 },
+    { q: "ما هو حل نظام المعادلات: x + y = 7 و x - y = 3؟", o: ["(4,3)", "(5,2)", "(6,1)", "(3,4)"], a: 1 },
+    { q: "ما هو cos(60°)؟", o: ["0", "0.5", "√3/2", "1"], a: 1 },
+    { q: "ما هو حجم المكعب الذي طول ضلعه 4 سم؟", o: ["16", "32", "48", "64"], a: 3 },
+    { q: "إذا كان tan(θ) = 3/4، فما قيمة sin(θ)؟", o: ["3/5", "4/5", "3/4", "5/3"], a: 0 },
+    { q: "ما هو ناتج تكامل 2x dx؟", o: ["x²", "x² + C", "2x²", "x + C"], a: 1 }
+  ],
+  chemistry: [
+    { q: "ما هو الرمز الكيميائي للصوديوم؟", o: ["So", "Na", "Sd", "No"], a: 1 },
+    { q: "كم عدد الإلكترونات في ذرة الأكسجين؟", o: ["6", "7", "8", "16"], a: 2 },
+    { q: "ما هو الغاز النبيل الأخف وزناً؟", o: ["النيون", "الهيليوم", "الأرجون", "الكريبتون"], a: 1 },
+    { q: "ما هو pH المحايد؟", o: ["0", "7", "14", "1"], a: 1 },
+    { q: "ما هو المركب الكيميائي للماء؟", o: ["HO", "H₂O", "OH", "H₂O₂"], a: 1 },
+    { q: "ما هو العدد الذري للكربون؟", o: ["4", "6", "8", "12"], a: 1 },
+    { q: "أي من التالي هو حمض قوي؟", o: ["CH₃COOH", "HCl", "H₂CO₃", "H₂O"], a: 1 },
+    { q: "ما هو الغاز المسؤول عن الاحتباس الحراري بشكل أساسي؟", o: ["O₂", "N₂", "CO₂", "H₂"], a: 2 },
+    { q: "كم عدد الروابط التساهمية في جزيء الميثان CH₄؟", o: ["2", "3", "4", "5"], a: 2 },
+    { q: "ما هو التفاعل الذي يُطلق فيه الحرارة؟", o: ["تفاعل ماص للحرارة", "تفاعل طارد للحرارة", "تفاعل عكسي", "تفاعل أكسدة"], a: 1 }
+  ],
+  physics: [
+    { q: "ما هي وحدة قياس القوة في النظام الدولي؟", o: ["الجول", "النيوتن", "الواط", "الباكال"], a: 1 },
+    { q: "ما هي سرعة الضوء في الفراغ تقريباً؟", o: ["3×10⁸ م/ث", "3×10⁵ م/ث", "300,000 كم/ث", "الأولى والثالثة"], a: 3 },
+    { q: "ما هو القانون الذي ينص على أن لكل فعل رد فعل؟", o: ["قانون نيوتن الأول", "قانون نيوتن الثاني", "قانون نيوتن الثالث", "قانون كبلر"], a: 2 },
+    { q: "ما هي وحدة قياس المقاومة الكهربائية؟", o: ["أمبير", "فولت", "أوم", "كولوم"], a: 2 },
+    { q: "ما الطاقة التي يمتلكها الجسم بسبب حرارته أو حركته؟", o: ["طاقة وضع", "طاقة حركة", "طاقة كيميائية", "طاقة نووية"], a: 1 }
+  ],
+  arabic: [
+    { q: "ما اعراب كلمة 'الطالبُ' في جملة: 'ذاكرَ الطالبُ درسَهُ'؟", o: ["مفعول به", "فاعل مرفوع", "مبتدأ", "خبر"], a: 1 },
+    { q: "ما هو جمع كلمة 'حسام'؟", o: ["أحسام", "حسائم", "أحسبة", "حُسُم"], a: 0 },
+    { q: "من هو أمير الشعراء؟", o: ["حافظ إبراهيم", "أحمد شوقي", "المتنبي", "إيليا أبو ماضي"], a: 1 }
+  ],
+  english: [
+    { q: "Choose the correct answer: She ______ to school every day.", o: ["go", "goes", "gone", "going"], a: 1 },
+    { q: "What is the synonym of 'Happy'?", o: ["Sad", "Joyful", "Angry", "Tired"], a: 1 },
+    { q: "If I ______ rich, I would buy a sports car.", o: ["am", "was", "were", "been"], a: 2 }
+  ],
+  biology: [
+    { q: "ما هو العضو المسؤول عن تصفية الدم في جسم الإنسان؟", o: ["القلب", "الرئة", "الكلية", "الكبِد"], a: 2 },
+    { q: "أين تتم عملية البناء الضوئي في الخلية النباتية؟", o: ["النواة", "البلاستيدات الخضراء", "الميتوكندريا", "الجدار الخلوي"], a: 1 }
+  ],
+  history: [
+    { q: "من هو قائد ثورة 1919 في مصر؟", o: ["مصطفى كامل", "سعد زغلول", "أحمد عرابي", "محمد فريد"], a: 1 },
+    { q: "في أي عام اندلعت الحرب العالمية الأولى؟", o: ["1914", "1918", "1939", "1945"], a: 0 }
+  ],
+  french: [
+    { q: "Comment dit-on 'Thank you' en français?", o: ["Bonjour", "Merci", "Au revoir", "S'il vous plaît"], a: 1 },
+    { q: "Quel est le pluriel de 'Le livre'?", o: ["Les livre", "Les livres", "La livres", "Des livre"], a: 1 }
+  ],
+  geography: [
+    { q: "ما هي أكبر قارة في العالم من حيث المساحة؟", o: ["أفريقيا", "آسيا", "أوروبا", "أمريكا الشمالية"], a: 1 },
+    { q: "ما هو أطول نهر في العالم؟", o: ["نهر الأمازون", "نهر النيل", "نهر الميسيسيبي", "نهرالجانج"], a: 1 }
+  ]
+};
