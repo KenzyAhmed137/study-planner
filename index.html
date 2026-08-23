@@ -959,4 +959,85 @@ const quizBanks = {
     { q: "ما هي أكبر قارة في العالم من حيث المساحة؟", o: ["أفريقيا", "آسيا", "أوروبا", "أمريكا الشمالية"], a: 1 },
     { q: "ما هو أطول نهر في العالم؟", o: ["نهر الأمازون", "نهر النيل", "نهر الميسيسيبي", "نهرالجانج"], a: 1 }
   ]
+};}; // قفلة كائن quizBanks
+
+// ===================== QUIZ SYSTEM LOGIC =====================
+let currentQuiz = [];
+let currentQIndex = 0;
+let score = 0;
+
+function startQuiz(subject) {
+  const container = document.getElementById('quizContainer');
+  if (!subject || !quizBanks[subject]) {
+    container.innerHTML = '';
+    return;
+  }
+  currentQuiz = quizBanks[subject];
+  currentQIndex = 0;
+  score = 0;
+  showQuestion();
+}
+
+function showQuestion() {
+  const container = document.getElementById('quizContainer');
+  if (currentQIndex >= currentQuiz.length) {
+    container.innerHTML = `<h3>🎉 انتهى الاختبار!<br>درجتك: ${score} من ${currentQuiz.length}</h3>`;
+    return;
+  }
+  const qData = currentQuiz[currentQIndex];
+  container.innerHTML = `
+    <h4 style="margin-bottom:12px;">${qData.q}</h4>
+    ${qData.o.map((opt, i) => `
+      <button onclick="checkAnswer(${i})" class="btn-pink" style="margin:4px 0;">${opt}</button>
+    `).join('')}
+  `;
+}
+
+function checkAnswer(selectedIndex) {
+  if (selectedIndex === currentQuiz[currentQIndex].a) {
+    score++;
+    alert("إجابة صحيحة! 👏");
+  } else {
+    alert("إجابة خاطئة! ❌");
+  }
+  currentQIndex++;
+  showQuestion();
+}
+
+// ===================== SETTINGS & UTILITIES =====================
+function openSettings() { document.getElementById('settingsModal').classList.add('active'); }
+function closeSettings() { document.getElementById('settingsModal').classList.remove('active'); }
+function toggleDark() {
+  let isDark = document.getElementById('darkToggle').checked;
+  document.body.classList.toggle('dark-mode', isDark);
+  localStorage.setItem('dark', isDark);
+}
+
+function clearData() {
+  if(confirm('هل تريد مسح كل البيانات وإعادة الضبط؟')) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+function saveAndReload() {
+  localStorage.setItem('subjects', JSON.stringify(subjects));
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  localStorage.setItem('notes', JSON.stringify(notes));
+  renderSubjects();
+  renderTasks();
+  renderNotes();
+  updateStats();
+}
+
+window.onload = function() {
+  if(localStorage.getItem('dark') === 'true') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('darkToggle').checked = true;
+  }
+  saveAndReload();
 };
+</script>
+</body>
+</html>
+
