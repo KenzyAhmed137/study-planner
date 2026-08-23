@@ -269,3 +269,105 @@ footer a { color: var(--header-text); text-decoration: underline; }
     <div class="chart-container" id="chartContainer"></div>
     <div class="progress-container" id="progressList"></div>
   </div>
+  <!-- POMODORO -->
+  <div id="pomodoro" class="section">
+    <h2>⏱️ مؤقت بومودورو</h2>
+    <div class="pomodoro-box">
+      <div class="pomodoro-status" id="pomoStatus">🍅 جاهز للبدء</div>
+      <div class="pomodoro-timer" id="pomoTimer">25:00</div>
+      <div class="pomodoro-controls">
+        <button class="btn btn-success" onclick="startPomodoro()">▶️ بدء</button>
+        <button class="btn btn-secondary" onclick="pausePomodoro()">⏸️ إيقاف مؤقت</button>
+        <button class="btn" onclick="resetPomodoro()">🔄 إعادة</button>
+      </div>
+      <div class="pomodoro-cycles" id="pomoCycles">أنجزتي 0 دورات اليوم</div>
+    </div>
+    <div class="card" style="margin-top:20px; border-right-color:var(--success);">
+      <h4 style="margin-bottom:8px;">📋 كيفية الاستخدام:</h4>
+      <p style="color:var(--text-secondary); line-height:1.8; font-size:0.9rem;">
+        1️⃣ اضغطي "بدء" لمذاكرة 25 دقيقة<br>
+        2️⃣ ركزي تماماً في المذاكرة<br>
+        3️⃣ بعد 25 دقيقة، خذي راحة 5 دقائق<br>
+        4️⃣ كرري 4 مرات، ثم خذي راحة طويلة 15-30 دقيقة
+      </p>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div id="notes" class="section">
+    <h2>📝 ملاحظات يومية</h2>
+    <textarea id="noteText" placeholder="اكتبي ملاحظتك هنا..." rows="4" style="margin-bottom:8px;"></textarea>
+    <button class="btn" onclick="addNote()">➕ إضافة ملاحظة</button>
+    <div class="notes-grid" id="notesList"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="section">
+    <h2>🧠 اختبر معلوماتك</h2>
+    <div id="quizStart">
+      <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 10px;">اختاري المادة اللي عايزة تختبري نفسك فيها:</p>
+      <div class="quiz-categories">
+        <div class="quiz-cat-card" onclick="startQuiz('math')"><div class="cat-icon">📐</div><h4>رياضيات</h4><p>10 أسئلة في الجبر والهندسة</p></div>
+        <div class="quiz-cat-card" onclick="startQuiz('chemistry')"><div class="cat-icon">⚗️</div><h4>كيمياء</h4><p>10 أسئلة في الكيمياء العضوية وغير العضوية</p></div>
+        <div class="quiz-cat-card" onclick="startQuiz('physics')"><div class="cat-icon">⚡</div><h4>فيزياء</h4><p>10 أسئلة في الميكانيكا والكهرباء</p></div>
+        <div class="quiz-cat-card" onclick="startQuiz('english')"><div class="cat-icon">🇬🇧</div><h4>English</h4><p>10 questions in Grammar & Vocabulary</p></div>
+      </div>
+    </div>
+    <div id="quizQuestion" style="display: none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <span id="quizCategoryBadge" style="padding:4px 12px; border-radius:20px; background:var(--light-bg); font-size:0.8rem; font-weight:600;"></span>
+        <span id="quizCounter" style="color:var(--text-muted); font-size:0.85rem;"></span>
+      </div>
+      <div class="quiz-question" id="questionText"></div>
+      <div class="quiz-options" id="optionsList"></div>
+      <p id="quizFeedback" style="margin-top: 16px; font-weight: 600; min-height: 24px;"></p>
+      <button class="btn btn-secondary" id="nextBtn" onclick="nextQuestion()" style="margin-top: 12px; display: none;">السؤال التالي ⬅️</button>
+    </div>
+    <div id="quizResult" style="display: none;">
+      <div class="quiz-score-big" id="finalScore"></div>
+      <p id="scoreMessage" style="font-size: 1.1rem; margin-bottom: 8px;"></p>
+      <p id="scoreDetails" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;"></p>
+      <button class="btn" onclick="backToQuizMenu()">🔁 اختبار جديد</button>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div id="tips" class="section">
+    <h2>💡 نصائح ذهبية للمذاكرة</h2>
+    <div class="tip-card"><h4>🍅 تقنية البومودورو</h4><p>ذاكري 25 دقيقة متواصلة، ثم خذي راحة 5 دقائق. بعد 4 جولات، خذي راحة 15-30 دقيقة.</p></div>
+    <div class="tip-card"><h4>📝 طريقة كورنيل للملاحظات</h4><p>قسمي صفحة المذاكرة لثلاثة أجزاء: ملاحظات رئيسية، كلمات مفتاحية، وملخص.</p></div>
+    <div class="tip-card"><h4>😴 النوم مهم جداً</h4><p>النوم 7-8 ساعات يساعد على تثبيت المعلومات في الذاكرة طويلة المدى.</p></div>
+    <div class="tip-card"><h4>🎯 حددي أهداف يومية</h4><p>اكتبي 3 أهداف رئيسية يجب إنجازها كل يوم. التركيز على القليل يعطي نتائج أفضل.</p></div>
+    <div class="tip-card"><h4>🧘 خذي فواصل نشطة</h4><p>خلال الراحة، تحركي أو امشي أو افعلي تمارين خفيفة. الحركة تنشط الدورة الدموية للمخ.</p></div>
+    <div class="tip-card"><h4>📵 ابعدي الهاتف</h4><p>ضعي هاتفك في وضع الطيران أثناء المذاكرة. كل إشعار يقطع تركيزك ويحتاج 15 دقيقة لاستعادته.</p></div>
+  </div>
+</div>
+
+<!-- SCHEDULE MODAL -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal">
+    <h3>📅 إضافة/تعديل مادة للجدول</h3>
+    <input type="text" id="modalSubject" placeholder="اسم المادة">
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-success btn-sm" onclick="saveScheduleCell()">حفظ</button>
+      <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteScheduleCell()">🗑️ حذف</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-box">
+    <h3>⚙️ الإعدادات</h3>
+    <div class="setting-row"><span>🌙 الوضع الليلي (Dark Mode)</span><div class="toggle-switch" id="darkToggle" onclick="toggleDarkMode()"></div></div>
+    <div class="setting-row"><span>🔔 التنبيهات الصوتية</span><div class="toggle-switch" id="settingsAudioToggle" onclick="toggleAudioFromSettings()"></div></div>
+    <div class="setting-row"><span>🗑️ مسح جميع البيانات</span><button class="btn btn-sm" style="background:var(--danger);" onclick="clearAllData()">مسح</button></div>
+    <div class="modal-actions" style="margin-top: 20px;"><button class="btn btn-secondary btn-sm" onclick="closeSettings()">إغلاق</button></div>
+  </div>
+</div>
+
+<footer>
+  <p>تم التطوير بواسطة <a href="https://github.com/KenzyAhmed137" target="_blank">Kenzy Ahmed</a> 💜</p>
+  <p style="margin-top: 8px; font-size: 0.8rem;">Student Study Planner v3.0 © 2026</p>
+</footer>
