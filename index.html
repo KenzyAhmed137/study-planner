@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Study Planner - مخطط المذاكرة</title>
+<style>
+:root {
+  --bg-gradient-start: #667eea; --bg-gradient-end: #764ba2;
+  --header-text: #ffffff; --card-bg: #ffffff;
+  --card-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  --text-primary: #1a1a2e; --text-secondary: #555555; --text-muted: #888888;
+  --border-color: #e0e0e0; --input-bg: #ffffff; --input-border: #e0e0e0;
+  --light-bg: #f5f5f5; --hover-bg: #eaeaea;
+  --highlight: #e94560; --success: #2ecc71; --warning: #f39c12; --danger: #e74c3c;
+  --accent-dark: #1a1a2e; --accent-mid: #16213e; --accent-light: #0f3460;
+  --radius: 12px; --transition: all 0.3s ease;
+}
+body.dark-mode {
+  --bg-gradient-start: #0f0c29; --bg-gradient-end: #302b63;
+  --header-text: #e0e0e0; --card-bg: #1e1e2f;
+  --card-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  --text-primary: #e8e8e8; --text-secondary: #b0b0b0; --text-muted: #777777;
+  --border-color: #333344; --input-bg: #2a2a3d; --input-border: #444455;
+  --light-bg: #252536; --hover-bg: #2e2e42;
+  --highlight: #ff6b81; --success: #4ade80; --warning: #fbbf24; --danger: #f87171;
+  --accent-dark: #e0e0e0; --accent-mid: #c0c0d0; --accent-light: #a0a0b8;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  min-height: 100vh; color: var(--text-primary); padding-bottom: 40px; transition: var(--transition);
+}
+.container { max-width: 900px; margin: 0 auto; padding: 20px; }
+header { text-align: center; padding: 30px 20px 20px; color: var(--header-text); position: relative; }
+header h1 { font-size: 2.2rem; margin-bottom: 8px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+header p { font-size: 1rem; opacity: 0.9; }
+.settings-btn {
+  position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.2);
+  border: none; color: var(--header-text); width: 40px; height: 40px; border-radius: 50%;
+  cursor: pointer; font-size: 1.2rem; backdrop-filter: blur(10px); transition: var(--transition);
+  display: flex; align-items: center; justify-content: center;
+}
+.settings-btn:hover { background: rgba(255,255,255,0.35); transform: rotate(30deg); }
+.nav-tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px; }
+.nav-tab {
+  padding: 10px 18px; border: none; border-radius: 30px; background: rgba(255,255,255,0.2);
+  color: var(--header-text); cursor: pointer; font-size: 0.9rem; transition: var(--transition);
+  backdrop-filter: blur(10px); font-family: inherit;
+}
+.nav-tab:hover { background: rgba(255,255,255,0.35); }
+.nav-tab.active { background: var(--card-bg); color: var(--text-primary); font-weight: 600; }
+.section {
+  display: none; background: var(--card-bg); border-radius: var(--radius); padding: 28px;
+  box-shadow: var(--card-shadow); animation: fadeIn 0.4s ease; transition: var(--transition);
+}
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.section h2 { font-size: 1.4rem; margin-bottom: 20px; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+.card { background: var(--light-bg); border-radius: 10px; padding: 16px; margin-bottom: 12px; transition: var(--transition); border-right: 4px solid var(--highlight); }
+.card:hover { transform: translateX(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+input, select, textarea {
+  width: 100%; padding: 12px 16px; border: 2px solid var(--input-border); border-radius: 10px;
+  font-size: 1rem; transition: var(--transition); margin-bottom: 12px; font-family: inherit;
+  background: var(--input-bg); color: var(--text-primary);
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--highlight); }
+.btn {
+  padding: 10px 20px; border: none; border-radius: 10px; background: var(--highlight);
+  color: #ffffff; font-size: 0.95rem; cursor: pointer; transition: var(--transition);
+  font-weight: 500; font-family: inherit;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(233,69,96,0.3); }
+.btn-secondary { background: var(--accent-light); }
+.btn-success { background: var(--success); color: #1a1a2e; }
+.btn-warning { background: var(--warning); color: #1a1a2e; }
+.btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+.btn-icon { width: 32px; height: 32px; padding: 0; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; margin-right: 4px; }
+.subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; }
+.subject-card {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent-mid)); color: #ffffff;
+  padding: 20px; border-radius: var(--radius); text-align: center; position: relative; overflow: hidden; transition: var(--transition);
+}
+.subject-card:hover { transform: translateY(-4px); }
+.subject-card::before { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: rgba(255,255,255,0.05); border-radius: 50%; }
+.subject-card h3 { font-size: 1.1rem; margin-bottom: 6px; position: relative; z-index: 1; }
+.subject-card .hours { font-size: 0.85rem; opacity: 0.85; position: relative; z-index: 1; }
+.subject-actions { position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; z-index: 2; }
+.action-btn { width: 26px; height: 26px; border: none; border-radius: 6px; background: rgba(255,255,255,0.2); color: #fff; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+.action-btn:hover { background: rgba(255,255,255,0.4); }
+.action-btn.delete:hover { background: var(--danger); }
+.schedule-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.schedule-table th, .schedule-table td { padding: 10px; text-align: center; border: 1px solid var(--border-color); }
+.schedule-table th { background: var(--accent-dark); color: var(--header-text); font-size: 0.85rem; }
+.schedule-table td { background: var(--light-bg); min-height: 50px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; }
+.schedule-table td:hover { background: var(--hover-bg); }
+.schedule-table td.filled { background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end)); color: #ffffff; font-weight: 500; }
+.task-item { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--light-bg); border-radius: 10px; margin-bottom: 10px; transition: var(--transition); position: relative; }
+.task-item:hover { background: var(--hover-bg); }
+.task-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--highlight); margin: 0; flex-shrink: 0; }
+.task-item.completed .task-text { text-decoration: line-through; opacity: 0.4; }
+.task-text { flex: 1; font-size: 0.95rem; }
+.task-priority { padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+.priority-high { background: rgba(231,76,60,0.15); color: var(--danger); }
+.priority-medium { background: rgba(243,156,18,0.15); color: var(--warning); }
+.priority-low { background: rgba(46,204,113,0.15); color: var(--success); }
+.task-due { font-size: 0.8rem; color: var(--text-muted); margin-left: 8px; }
+.task-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+.task-item:hover .task-actions { opacity: 1; }
+.progress-container { margin-top: 20px; }
+.progress-item { margin-bottom: 18px; }
+.progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.progress-label { font-weight: 500; font-size: 0.95rem; }
+.progress-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+.progress-item:hover .progress-actions { opacity: 1; }
+.progress-bar { height: 18px; background: var(--border-color); border-radius: 9px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 9px; transition: width 0.8s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: #fff; font-size: 0.75rem; font-weight: 600; }
+.quiz-categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin: 20px 0; }
+.quiz-cat-card { background: var(--light-bg); border: 2px solid var(--border-color); border-radius: var(--radius); padding: 24px 16px; text-align: center; cursor: pointer; transition: var(--transition); }
+.quiz-cat-card:hover { border-color: var(--highlight); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+.quiz-cat-card .cat-icon { font-size: 2.5rem; margin-bottom: 10px; }
+.quiz-cat-card h4 { font-size: 1.1rem; margin-bottom: 4px; }
+.quiz-cat-card p { font-size: 0.8rem; color: var(--text-muted); }
+.quiz-box { text-align: center; padding: 10px; }
+.quiz-question { font-size: 1.15rem; margin-bottom: 24px; font-weight: 500; line-height: 1.6; }
+.quiz-options { display: grid; gap: 10px; }
+.quiz-option { padding: 14px 20px; border: 2px solid var(--border-color); border-radius: 10px; cursor: pointer; transition: var(--transition); text-align: right; font-size: 1rem; background: var(--light-bg); color: var(--text-primary); }
+.quiz-option:hover { border-color: var(--highlight); background: rgba(233,69,96,0.05); }
+.quiz-option.correct { border-color: var(--success); background: rgba(46,204,113,0.1); }
+.quiz-option.wrong { border-color: var(--danger); background: rgba(231,76,60,0.1); }
+.quiz-score-big { font-size: 3rem; font-weight: 700; color: var(--highlight); margin: 16px 0; }
+.tip-card { background: var(--light-bg); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; border-right: 4px solid var(--success); transition: var(--transition); }
+.tip-card:hover { transform: translateX(-4px); }
+.tip-card h4 { color: var(--text-primary); margin-bottom: 6px; font-size: 1rem; }
+.tip-card p { color: var(--text-secondary); line-height: 1.7; font-size: 0.9rem; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.stat-card { background: linear-gradient(135deg, var(--accent-light), var(--accent-mid)); color: #ffffff; padding: 18px; border-radius: var(--radius); text-align: center; }
+.stat-card .stat-number { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; }
+.stat-card .stat-label { font-size: 0.85rem; opacity: 0.85; }
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.active { display: flex; }
+.modal { background: var(--card-bg); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; animation: scaleIn 0.3s ease; box-shadow: var(--card-shadow); }
+@keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal h3 { margin-bottom: 16px; color: var(--text-primary); }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+.settings-panel { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+.settings-panel.active { display: flex; }
+.settings-box { background: var(--card-bg); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 400px; box-shadow: var(--card-shadow); }
+.settings-box h3 { margin-bottom: 20px; }
+.setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border-color); }
+.setting-row:last-child { border-bottom: none; }
+.toggle-switch { position: relative; width: 50px; height: 26px; background: var(--border-color); border-radius: 13px; cursor: pointer; transition: var(--transition); }
+.toggle-switch.on { background: var(--highlight); }
+.toggle-switch::after { content: ''; position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: var(--transition); }
+.toggle-switch.on::after { right: 27px; }
+
+/* Pomodoro */
+.pomodoro-box { text-align: center; padding: 20px; }
+.pomodoro-timer { font-size: 4rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; margin: 20px 0; letter-spacing: 4px; }
+.pomodoro-status { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 20px; }
+.pomodoro-controls { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.pomodoro-cycles { margin-top: 16px; font-size: 0.9rem; color: var(--text-muted); }
+
+/* Notes */
+.notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin-top: 16px; }
+.note-card { background: var(--light-bg); border-radius: 10px; padding: 14px; position: relative; transition: var(--transition); border: 1px solid var(--border-color); }
+.note-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.note-date { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
+.note-text { font-size: 0.9rem; color: var(--text-primary); line-height: 1.6; white-space: pre-wrap; }
+.note-actions { position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+.note-card:hover .note-actions { opacity: 1; }
+
+/* Chart */
+.chart-container { margin-top: 20px; text-align: center; }
+.chart-svg { max-width: 100%; height: auto; }
+
+/* Audio toggle */
+.audio-toggle { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 10px; background: var(--light-bg); border-radius: 8px; }
+.audio-toggle span { font-size: 0.9rem; }
+
+footer { text-align: center; padding: 30px; color: var(--header-text); opacity: 0.8; font-size: 0.9rem; }
+footer a { color: var(--header-text); text-decoration: underline; }
+@media (max-width: 600px) {
+  header h1 { font-size: 1.6rem; } .nav-tab { padding: 8px 12px; font-size: 0.8rem; }
+  .section { padding: 18px; } .subject-grid { grid-template-columns: 1fr 1fr; }
+  .schedule-table { font-size: 0.75rem; } .schedule-table th, .schedule-table td { padding: 6px 4px; }
+  .task-actions { opacity: 1; } .progress-actions { opacity: 1; } .quiz-categories { grid-template-columns: 1fr 1fr; }
+  .pomodoro-timer { font-size: 2.5rem; } .notes-grid { grid-template-columns: 1fr; }
+}
+</style>
+<base target="_blank">
+</head>
+<body>
+<header>
+  <button class="settings-btn" onclick="openSettings()" title="الإعدادات">⚙️</button>
+  <h1>📚 Student Study Planner</h1>
+  <p>نظم مذاكرتك، حقق أهدافك، وتفوق في دراستك</p>
+</header>
+
+<div class="container">
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('dashboard')">📊 لوحة التحكم</button>
+    <button class="nav-tab" onclick="showSection('subjects')">📖 المواد</button>
+    <button class="nav-tab" onclick="showSection('schedule')">📅 الجدول</button>
+    <button class="nav-tab" onclick="showSection('tasks')">✅ المهام</button>
+    <button class="nav-tab" onclick="showSection('progress')">📈 التقدم</button>
+    <button class="nav-tab" onclick="showSection('pomodoro')">⏱️ بومودورو</button>
+    <button class="nav-tab" onclick="showSection('notes')">📝 ملاحظات</button>
+    <button class="nav-tab" onclick="showSection('quiz')">🧠 اختبر نفسك</button>
+    <button class="nav-tab" onclick="showSection('tips')">💡 نصائح</button>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="section active">
+    <h2>📊 لوحة التحكم</h2>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-number" id="statSubjects">0</div><div class="stat-label">مواد</div></div>
+      <div class="stat-card"><div class="stat-number" id="statTasks">0</div><div class="stat-label">مهام</div></div>
+      <div class="stat-card"><div class="stat-number" id="statCompleted">0</div><div class="stat-label">منجزة</div></div>
+      <div class="stat-card"><div class="stat-number" id="statProgress">0%</div><div class="stat-label">نسبة الإنجاز</div></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:10px;">🎯 موعد الامتحان القادم</h3>
+      <input type="date" id="examDate" onchange="saveExamDate()">
+      <p id="examCountdown" style="margin-top:10px; color: var(--highlight); font-weight:600;"></p>
+    </div>
+    <div class="card" style="border-right-color:var(--success);">
+      <h3 style="margin-bottom:10px;">🔔 مهام قريبة</h3>
+      <div id="upcomingTasks"></div>
+    </div>
+  </div>
+
+  <!-- SUBJECTS -->
+  <div id="subjects" class="section">
+    <h2>📖 إدارة المواد الدراسية</h2>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <input type="text" id="subjectName" placeholder="اسم المادة" style="flex: 1; min-width: 150px;">
+      <input type="number" id="subjectHours" placeholder="ساعات/أسبوع" style="width: 140px;">
+      <button class="btn" onclick="addSubject()">➕ إضافة</button>
+    </div>
+    <div class="subject-grid" id="subjectsList"></div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div id="schedule" class="section">
+    <h2>📅 جدول المذاكرة الأسبوعي</h2>
+    <p style="margin-bottom: 16px; color: var(--text-muted);">اضغط على أي خلية لإضافة أو تعديل المادة</p>
+    <div style="overflow-x: auto;">
+      <table class="schedule-table">
+        <thead><tr><th>اليوم / الوقت</th><th>8-10 ص</th><th>10-12 ص</th><th>12-2 م</th><th>2-4 م</th><th>4-6 م</th><th>6-8 م</th></tr></thead>
+        <tbody id="scheduleBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div id="tasks" class="section">
+    <h2>✅ قائمة المهام</h2>
+    <div class="audio-toggle">
+      <span>🔔 التنبيهات الصوتية:</span>
+      <div class="toggle-switch" id="audioToggle" onclick="toggleAudio()"></div>
+    </div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+      <input type="text" id="taskName" placeholder="اسم المهمة" style="flex: 1; min-width: 150px;">
+      <select id="taskPriority" style="width: 120px;"><option value="high">🔴 عالية</option><option value="medium" selected>🟠 متوسطة</option><option value="low">🟢 منخفضة</option></select>
+      <input type="date" id="taskDue" style="width: 150px;">
+      <button class="btn" onclick="addTask()">➕ إضافة</button>
+    </div>
+    <div id="tasksList"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div id="progress" class="section">
+    <h2>📈 متابعة التقدم</h2>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+      <input type="text" id="progressSubject" placeholder="اسم المادة" style="flex: 1; min-width: 150px;">
+      <input type="number" id="progressPercent" placeholder="نسبة الإنجاز %" min="0" max="100" style="width: 150px;">
+      <button class="btn" onclick="addProgress()">➕ تحديث</button>
+    </div>
+    <div class="chart-container" id="chartContainer"></div>
+    <div class="progress-container" id="progressList"></div>
+  </div>
+
+  <!-- POMODORO -->
+  <div id="pomodoro" class="section">
+    <h2>⏱️ مؤقت بومودورو</h2>
+    <div class="pomodoro-box">
+      <div class="pomodoro-status" id="pomoStatus">🍅 جاهز للبدء</div>
+      <div class="pomodoro-timer" id="pomoTimer">25:00</div>
+      <div class="pomodoro-controls">
+        <button class="btn btn-success" onclick="startPomodoro()">▶️ بدء</button>
+        <button class="btn btn-secondary" onclick="pausePomodoro()">⏸️ إيقاف مؤقت</button>
+        <button class="btn" onclick="resetPomodoro()">🔄 إعادة</button>
+      </div>
+      <div class="pomodoro-cycles" id="pomoCycles">أنجزتي 0 دورات اليوم</div>
+    </div>
+    <div class="card" style="margin-top:20px; border-right-color:var(--success);">
+      <h4 style="margin-bottom:8px;">📋 كيفية الاستخدام:</h4>
+      <p style="color:var(--text-secondary); line-height:1.8; font-size:0.9rem;">
+        1️⃣ اضغطي "بدء" لمذاكرة 25 دقيقة<br>
+        2️⃣ ركزي تماماً في المذاكرة<br>
+ 
