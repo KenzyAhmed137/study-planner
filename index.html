@@ -75,122 +75,67 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--h
 .btn-secondary { background: var(--accent-light); }
 .btn-success { background: var(--success); color: #1a1a2e; }
 .btn-warning { background: var(--warning); color: #1a1a2e; }
-.btn-sm { padding: 6px 14px; font-size: 0.8rem; }
-.btn-icon { width: 32px; height: 32px; padding: 0; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; margin-right: 4px; }
 .subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; }
 .subject-card {
   background: linear-gradient(135deg, var(--accent-light), var(--accent-mid)); color: #ffffff;
   padding: 20px; border-radius: var(--radius); text-align: center; position: relative; overflow: hidden; transition: var(--transition);
 }
 .subject-card:hover { transform: translateY(-4px); }
-.subject-card::before { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: rgba(255,255,255,0.05); border-radius: 50%; }
-.subject-card h3 { font-size: 1.1rem; margin-bottom: 6px; position: relative; z-index: 1; }
-.subject-card .hours { font-size: 0.85rem; opacity: 0.85; position: relative; z-index: 1; }
-.subject-actions { position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; z-index: 2; }
-.action-btn { width: 26px; height: 26px; border: none; border-radius: 6px; background: rgba(255,255,255,0.2); color: #fff; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
-.action-btn:hover { background: rgba(255,255,255,0.4); }
+.subject-card h3 { font-size: 1.1rem; margin-bottom: 6px; }
+.subject-card .hours { font-size: 0.85rem; opacity: 0.85; }
+.subject-actions { position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; }
+.action-btn { width: 26px; height: 26px; border: none; border-radius: 6px; background: rgba(255,255,255,0.2); color: #fff; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; }
 .action-btn.delete:hover { background: var(--danger); }
 .schedule-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
 .schedule-table th, .schedule-table td { padding: 10px; text-align: center; border: 1px solid var(--border-color); }
 .schedule-table th { background: var(--accent-dark); color: var(--header-text); font-size: 0.85rem; }
-.schedule-table td { background: var(--light-bg); min-height: 50px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; }
-.schedule-table td:hover { background: var(--hover-bg); }
+.schedule-table td { background: var(--light-bg); min-height: 50px; cursor: pointer; font-size: 0.85rem; }
 .schedule-table td.filled { background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end)); color: #ffffff; font-weight: 500; }
-.task-item { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--light-bg); border-radius: 10px; margin-bottom: 10px; transition: var(--transition); position: relative; }
-.task-item:hover { background: var(--hover-bg); }
-.task-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--highlight); margin: 0; flex-shrink: 0; }
+.task-item { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--light-bg); border-radius: 10px; margin-bottom: 10px; }
+.task-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--highlight); margin: 0; }
 .task-item.completed .task-text { text-decoration: line-through; opacity: 0.4; }
 .task-text { flex: 1; font-size: 0.95rem; }
 .task-priority { padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
 .priority-high { background: rgba(231,76,60,0.15); color: var(--danger); }
 .priority-medium { background: rgba(243,156,18,0.15); color: var(--warning); }
 .priority-low { background: rgba(46,204,113,0.15); color: var(--success); }
-.task-due { font-size: 0.8rem; color: var(--text-muted); margin-left: 8px; }
-.task-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
-.task-item:hover .task-actions { opacity: 1; }
-.progress-container { margin-top: 20px; }
 .progress-item { margin-bottom: 18px; }
 .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.progress-label { font-weight: 500; font-size: 0.95rem; }
-.progress-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
-.progress-item:hover .progress-actions { opacity: 1; }
 .progress-bar { height: 18px; background: var(--border-color); border-radius: 9px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 9px; transition: width 0.8s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: #fff; font-size: 0.75rem; font-weight: 600; }
 .quiz-categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin: 20px 0; }
 .quiz-cat-card { background: var(--light-bg); border: 2px solid var(--border-color); border-radius: var(--radius); padding: 24px 16px; text-align: center; cursor: pointer; transition: var(--transition); }
-.quiz-cat-card:hover { border-color: var(--highlight); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+.quiz-cat-card:hover { border-color: var(--highlight); transform: translateY(-4px); }
 .quiz-cat-card .cat-icon { font-size: 2.5rem; margin-bottom: 10px; }
-.quiz-cat-card h4 { font-size: 1.1rem; margin-bottom: 4px; }
-.quiz-cat-card p { font-size: 0.8rem; color: var(--text-muted); }
 .quiz-box { text-align: center; padding: 10px; }
-.quiz-question { font-size: 1.15rem; margin-bottom: 24px; font-weight: 500; line-height: 1.6; }
+.quiz-question { font-size: 1.15rem; margin-bottom: 24px; font-weight: 500; }
 .quiz-options { display: grid; gap: 10px; }
-.quiz-option { padding: 14px 20px; border: 2px solid var(--border-color); border-radius: 10px; cursor: pointer; transition: var(--transition); text-align: right; font-size: 1rem; background: var(--light-bg); color: var(--text-primary); }
-.quiz-option:hover { border-color: var(--highlight); background: rgba(233,69,96,0.05); }
+.quiz-option { padding: 14px 20px; border: 2px solid var(--border-color); border-radius: 10px; cursor: pointer; text-align: right; background: var(--light-bg); color: var(--text-primary); }
 .quiz-option.correct { border-color: var(--success); background: rgba(46,204,113,0.1); }
 .quiz-option.wrong { border-color: var(--danger); background: rgba(231,76,60,0.1); }
-.quiz-score-big { font-size: 3rem; font-weight: 700; color: var(--highlight); margin: 16px 0; }
-.tip-card { background: var(--light-bg); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; border-right: 4px solid var(--success); transition: var(--transition); }
-.tip-card:hover { transform: translateX(-4px); }
-.tip-card h4 { color: var(--text-primary); margin-bottom: 6px; font-size: 1rem; }
-.tip-card p { color: var(--text-secondary); line-height: 1.7; font-size: 0.9rem; }
+.tip-card { background: var(--light-bg); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; border-right: 4px solid var(--success); }
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px; }
 .stat-card { background: linear-gradient(135deg, var(--accent-light), var(--accent-mid)); color: #ffffff; padding: 18px; border-radius: var(--radius); text-align: center; }
-.stat-card .stat-number { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; }
-.stat-card .stat-label { font-size: 0.85rem; opacity: 0.85; }
+.stat-card .stat-number { font-size: 1.8rem; font-weight: 700; }
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
 .modal-overlay.active { display: flex; }
-.modal { background: var(--card-bg); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; animation: scaleIn 0.3s ease; box-shadow: var(--card-shadow); }
-@keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.modal h3 { margin-bottom: 16px; color: var(--text-primary); }
-.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+.modal { background: var(--card-bg); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; }
 .settings-panel { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
 .settings-panel.active { display: flex; }
-.settings-box { background: var(--card-bg); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 400px; box-shadow: var(--card-shadow); }
-.settings-box h3 { margin-bottom: 20px; }
-.setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border-color); }
-.setting-row:last-child { border-bottom: none; }
-.toggle-switch { position: relative; width: 50px; height: 26px; background: var(--border-color); border-radius: 13px; cursor: pointer; transition: var(--transition); }
+.settings-box { background: var(--card-bg); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 400px; }
+.toggle-switch { position: relative; width: 50px; height: 26px; background: var(--border-color); border-radius: 13px; cursor: pointer; }
 .toggle-switch.on { background: var(--highlight); }
 .toggle-switch::after { content: ''; position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: var(--transition); }
 .toggle-switch.on::after { right: 27px; }
-
-/* Pomodoro */
 .pomodoro-box { text-align: center; padding: 20px; }
-.pomodoro-timer { font-size: 4rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; margin: 20px 0; letter-spacing: 4px; }
-.pomodoro-status { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 20px; }
-.pomodoro-controls { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.pomodoro-cycles { margin-top: 16px; font-size: 0.9rem; color: var(--text-muted); }
-
-/* Notes */
+.pomodoro-timer { font-size: 4rem; font-weight: 700; margin: 20px 0; }
 .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin-top: 16px; }
-.note-card { background: var(--light-bg); border-radius: 10px; padding: 14px; position: relative; transition: var(--transition); border: 1px solid var(--border-color); }
-.note-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-.note-date { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
-.note-text { font-size: 0.9rem; color: var(--text-primary); line-height: 1.6; white-space: pre-wrap; }
-.note-actions { position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
-.note-card:hover .note-actions { opacity: 1; }
-
-/* Chart */
-.chart-container { margin-top: 20px; text-align: center; }
-.chart-svg { max-width: 100%; height: auto; }
-
-/* Audio toggle */
-.audio-toggle { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 10px; background: var(--light-bg); border-radius: 8px; }
-.audio-toggle span { font-size: 0.9rem; }
-
+.note-card { background: var(--light-bg); border-radius: 10px; padding: 14px; position: relative; border: 1px solid var(--border-color); }
 footer { text-align: center; padding: 30px; color: var(--header-text); opacity: 0.8; font-size: 0.9rem; }
-footer a { color: var(--header-text); text-decoration: underline; }
-@media (max-width: 600px) {
-  header h1 { font-size: 1.6rem; } .nav-tab { padding: 8px 12px; font-size: 0.8rem; }
-  .section { padding: 18px; } .subject-grid { grid-template-columns: 1fr 1fr; }
-  .schedule-table { font-size: 0.75rem; } .schedule-table th, .schedule-table td { padding: 6px 4px; }
-  .task-actions { opacity: 1; } .progress-actions { opacity: 1; } .quiz-categories { grid-template-columns: 1fr 1fr; }
-  .pomodoro-timer { font-size: 2.5rem; } .notes-grid { grid-template-columns: 1fr; }
-}
 </style>
 </head>
 <body>
+
 <header>
   <button class="settings-btn" onclick="openSettings()" title="الإعدادات">⚙️</button>
   <h1>📚 Student Study Planner</h1>
@@ -199,25 +144,25 @@ footer a { color: var(--header-text); text-decoration: underline; }
 
 <div class="container">
   <nav class="nav-tabs">
-    <button class="nav-tab active" onclick="showSection('dashboard')">📊 لوحة التحكم</button>
-    <button class="nav-tab" onclick="showSection('subjects')">📖 المواد</button>
-    <button class="nav-tab" onclick="showSection('schedule')">📅 الجدول</button>
-    <button class="nav-tab" onclick="showSection('tasks')">✅ المهام</button>
-    <button class="nav-tab" onclick="showSection('progress')">📈 التقدم</button>
-    <button class="nav-tab" onclick="showSection('pomodoro')">⏱️ بومودورو</button>
-    <button class="nav-tab" onclick="showSection('notes')">📝 ملاحظات</button>
-    <button class="nav-tab" onclick="showSection('quiz')">🧠 اختبر نفسك</button>
-    <button class="nav-tab" onclick="showSection('tips')">💡 نصائح</button>
+    <button class="nav-tab active" onclick="showSection('dashboard', event)">📊 لوحة التحكم</button>
+    <button class="nav-tab" onclick="showSection('subjects', event)">📖 المواد</button>
+    <button class="nav-tab" onclick="showSection('schedule', event)">📅 الجدول</button>
+    <button class="nav-tab" onclick="showSection('tasks', event)">✅ المهام</button>
+    <button class="nav-tab" onclick="showSection('progress', event)">📈 التقدم</button>
+    <button class="nav-tab" onclick="showSection('pomodoro', event)">⏱️ بومودورو</button>
+    <button class="nav-tab" onclick="showSection('notes', event)">📝 ملاحظات</button>
+    <button class="nav-tab" onclick="showSection('quiz', event)">🧠 اختبر نفسك</button>
+    <button class="nav-tab" onclick="showSection('tips', event)">💡 نصائح</button>
   </nav>
 
   <!-- DASHBOARD -->
   <div id="dashboard" class="section active">
     <h2>📊 لوحة التحكم</h2>
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-number" id="statSubjects">0</div><div class="stat-label">مواد</div></div>
-      <div class="stat-card"><div class="stat-number" id="statTasks">0</div><div class="stat-label">مهام</div></div>
-      <div class="stat-card"><div class="stat-number" id="statCompleted">0</div><div class="stat-label">منجزة</div></div>
-      <div class="stat-card"><div class="stat-number" id="statProgress">0%</div><div class="stat-label">نسبة الإنجاز</div></div>
+      <div class="stat-card"><div class="stat-number" id="statSubjects">0</div><div>مواد</div></div>
+      <div class="stat-card"><div class="stat-number" id="statTasks">0</div><div>مهام</div></div>
+      <div class="stat-card"><div class="stat-number" id="statCompleted">0</div><div>منجزة</div></div>
+      <div class="stat-card"><div class="stat-number" id="statProgress">0%</div><div>نسبة الإنجاز</div></div>
     </div>
     <div class="card">
       <h3 style="margin-bottom:10px;">🎯 موعد الامتحان القادم</h3>
@@ -244,7 +189,6 @@ footer a { color: var(--header-text); text-decoration: underline; }
   <!-- SCHEDULE -->
   <div id="schedule" class="section">
     <h2>📅 جدول المذاكرة الأسبوعي</h2>
-    <p style="margin-bottom: 16px; color: var(--text-muted);">اضغط على أي خلية لإضافة أو تعديل المادة</p>
     <div style="overflow-x: auto;">
       <table class="schedule-table">
         <thead><tr><th>اليوم / الوقت</th><th>8-10 ص</th><th>10-12 ص</th><th>12-2 م</th><th>2-4 م</th><th>4-6 م</th><th>6-8 م</th></tr></thead>
@@ -256,10 +200,6 @@ footer a { color: var(--header-text); text-decoration: underline; }
   <!-- TASKS -->
   <div id="tasks" class="section">
     <h2>✅ قائمة المهام</h2>
-    <div class="audio-toggle">
-      <span>🔔 التنبيهات الصوتية:</span>
-      <div class="toggle-switch" id="audioToggle" onclick="toggleAudio()"></div>
-    </div>
     <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
       <input type="text" id="taskName" placeholder="اسم المهمة" style="flex: 1; min-width: 150px;">
       <select id="taskPriority" style="width: 120px;"><option value="high">🔴 عالية</option><option value="medium" selected>🟠 متوسطة</option><option value="low">🟢 منخفضة</option></select>
@@ -277,7 +217,6 @@ footer a { color: var(--header-text); text-decoration: underline; }
       <input type="number" id="progressPercent" placeholder="نسبة الإنجاز %" min="0" max="100" style="width: 150px;">
       <button class="btn" onclick="addProgress()">➕ تحديث</button>
     </div>
-    <div class="chart-container" id="chartContainer"></div>
     <div class="progress-container" id="progressList"></div>
   </div>
 
@@ -287,16 +226,143 @@ footer a { color: var(--header-text); text-decoration: underline; }
     <div class="pomodoro-box">
       <div class="pomodoro-status" id="pomoStatus">🍅 جاهز للبدء</div>
       <div class="pomodoro-timer" id="pomoTimer">25:00</div>
-      <div class="pomodoro-controls">
+      <div style="display:flex; gap:10px; justify-content:center;">
         <button class="btn btn-success" onclick="startPomodoro()">▶️ بدء</button>
         <button class="btn btn-secondary" onclick="pausePomodoro()">⏸️ إيقاف مؤقت</button>
         <button class="btn" onclick="resetPomodoro()">🔄 إعادة</button>
       </div>
-      <div class="pomodoro-cycles" id="pomoCycles">أنجزتي 0 دورات اليوم</div>
+      <div id="pomoCycles" style="margin-top:15px;">أنجزتي 0 دورات اليوم</div>
     </div>
-    <div class="card" style="margin-top:20px; border-right-color:var(--success);">
-      <h4 style="margin-bottom:8px;">📋 كيفية الاستخدام:</h4>
-      <p style="color:var(--text-secondary); line-height:1.8; font-size:0.9rem;">
-        1️⃣ اضغطي "بدء" لمذاكرة 25 دقيقة<br>
-        2️⃣ ركزي تماماً في المذاكرة<br>
-        3️⃣ خذي استراحة 
+  </div>
+
+  <!-- NOTES -->
+  <div id="notes" class="section">
+    <h2>📝 الملاحظات والتدوينات</h2>
+    <textarea id="noteText" placeholder="اكتب ملاحظتك هنا..." rows="3"></textarea>
+    <button class="btn" onclick="addNote()" style="margin-bottom: 16px;">➕ إضافة ملاحظة</button>
+    <div class="notes-grid" id="notesList"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="section">
+    <h2>🧠 اختبر معلوماتك</h2>
+    <div id="quizCategories" class="quiz-categories">
+      <div class="quiz-cat-card" onclick="startQuiz('general')">
+        <div class="cat-icon">🌐</div>
+        <h4>ثقافة عامة</h4>
+      </div>
+      <div class="quiz-cat-card" onclick="startQuiz('science')">
+        <div class="cat-icon">🧪</div>
+        <h4>علوم وطبيعة</h4>
+      </div>
+    </div>
+    <div id="quizBox" class="quiz-box" style="display:none;">
+      <div class="quiz-question" id="quizQuestion"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div id="quizResult" style="margin-top:20px; font-weight:bold;"></div>
+      <button class="btn btn-secondary" onclick="resetQuiz()" style="margin-top:16px;">العودة للتصنيفات</button>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div id="tips" class="section">
+    <h2>💡 نصائح واستراتيجيات المذاكرة</h2>
+    <div class="tip-card">
+      <h4>🧠 تقنية فاينمان (Feynman Technique)</h4>
+      <p>اشرح المفهوم بلغة بسيطة كأنك تشرحه لطفل، وارجع للمصدر في النقاط الصعبة.</p>
+    </div>
+    <div class="tip-card">
+      <h4>🔄 التكرار المتباعد (Spaced Repetition)</h4>
+      <p>راجع المعلومات في فترات زمنية متزايدة لتثبيتها في الذاكرة طويلة المدى.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT SUBJECT -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3>تعديل المادة</h3>
+    <input type="text" id="editSubjectName">
+    <input type="number" id="editSubjectHours">
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
+      <button class="btn" onclick="saveSubjectEdit()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-box">
+    <h3>⚙️ الإعدادات</h3>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span>الوضع الداكن (Dark Mode)</span>
+      <div class="toggle-switch" id="darkModeToggle" onclick="toggleDarkMode()"></div>
+    </div>
+    <button class="btn btn-secondary" onclick="closeSettings()" style="width:100%; margin-top:20px;">إغلاق</button>
+  </div>
+</div>
+
+<footer>
+  <p>طوّر بحب لمساعدتك على النجاح والتفوق 🚀</p>
+</footer>
+
+<script>
+let subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+let progressData = JSON.parse(localStorage.getItem('progress')) || [];
+let notes = JSON.parse(localStorage.getItem('notes')) || [];
+let examDate = localStorage.getItem('examDate') || '';
+let darkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
+let pomoCyclesCount = JSON.parse(localStorage.getItem('pomoCycles')) || 0;
+
+let currentEditIndex = -1;
+let pomoTimerInt = null;
+let pomoTimeLeft = 25 * 60;
+let isPomoRunning = false;
+
+const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+let scheduleData = JSON.parse(localStorage.getItem('schedule')) || {};
+
+const quizData = {
+  general: [
+    { q: "ما هي عاصمة مصر؟", options: ["الإسكندرية", "القاهرة", "الجيزة"], correct: 1 },
+    { q: "كم عدد قارات العالم؟", options: ["5", "6", "7"], correct: 2 }
+  ],
+  science: [
+    { q: "ما هو الرمز الكيميائي للماء؟", options: ["CO2", "H2O", "O2"], correct: 1 }
+  ]
+};
+
+function showSection(id, e) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(e) e.target.classList.add('active');
+}
+
+function toggleDarkMode() {
+  darkMode = !darkMode;
+  document.body.classList.toggle('dark-mode', darkMode);
+  document.getElementById('darkModeToggle').classList.toggle('on', darkMode);
+  localStorage.setItem('darkMode', JSON.stringify(darkMode));
+}
+
+function openSettings() { document.getElementById('settingsPanel').classList.add('active'); }
+function closeSettings() { document.getElementById('settingsPanel').classList.remove('active'); }
+
+function addSubject() {
+  const name = document.getElementById('subjectName').value.trim();
+  const hours = document.getElementById('subjectHours').value;
+  if (!name) return;
+  subjects.push({ name, hours: hours || 0 });
+  document.getElementById('subjectName').value = '';
+  document.getElementById('subjectHours').value = '';
+  saveData(); renderSubjects(); updateStats();
+}
+
+function renderSubjects() {
+  const list = document.getElementById('subjectsList');
+  list.innerHTML = subjects.map((s, i) => `
+    <div class="subject-card">
+      <div class="subjec
