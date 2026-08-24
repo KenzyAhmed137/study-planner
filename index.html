@@ -154,11 +154,15 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--h
 .toggle-switch.on { background: var(--highlight); }
 .toggle-switch::after { content: ''; position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: var(--transition); }
 .toggle-switch.on::after { right: 27px; }
+
+/* Pomodoro */
 .pomodoro-box { text-align: center; padding: 20px; }
 .pomodoro-timer { font-size: 4rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; margin: 20px 0; letter-spacing: 4px; }
 .pomodoro-status { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 20px; }
 .pomodoro-controls { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .pomodoro-cycles { margin-top: 16px; font-size: 0.9rem; color: var(--text-muted); }
+
+/* Notes */
 .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin-top: 16px; }
 .note-card { background: var(--light-bg); border-radius: 10px; padding: 14px; position: relative; transition: var(--transition); border: 1px solid var(--border-color); }
 .note-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
@@ -166,10 +170,15 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--h
 .note-text { font-size: 0.9rem; color: var(--text-primary); line-height: 1.6; white-space: pre-wrap; }
 .note-actions { position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
 .note-card:hover .note-actions { opacity: 1; }
+
+/* Chart */
 .chart-container { margin-top: 20px; text-align: center; }
 .chart-svg { max-width: 100%; height: auto; }
+
+/* Audio toggle */
 .audio-toggle { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 10px; background: var(--light-bg); border-radius: 8px; }
 .audio-toggle span { font-size: 0.9rem; }
+
 footer { text-align: center; padding: 30px; color: var(--header-text); opacity: 0.8; font-size: 0.9rem; }
 footer a { color: var(--header-text); text-decoration: underline; }
 @media (max-width: 600px) {
@@ -181,7 +190,8 @@ footer a { color: var(--header-text); text-decoration: underline; }
 }
 </style>
 </head>
-<body><header>
+<body>
+<header>
   <button class="settings-btn" onclick="openSettings()" title="الإعدادات">⚙️</button>
   <h1>📚 Student Study Planner</h1>
   <p>نظم مذاكرتك، حقق أهدافك، وتفوق في دراستك</p>
@@ -229,7 +239,9 @@ footer a { color: var(--header-text); text-decoration: underline; }
       <button class="btn" onclick="addSubject()">➕ إضافة</button>
     </div>
     <div class="subject-grid" id="subjectsList"></div>
-  </div><!-- SCHEDULE -->
+  </div>
+
+  <!-- SCHEDULE -->
   <div id="schedule" class="section">
     <h2>📅 جدول المذاكرة الأسبوعي</h2>
     <p style="margin-bottom: 16px; color: var(--text-muted);">اضغط على أي خلية لإضافة أو تعديل المادة</p>
@@ -267,29 +279,23 @@ footer a { color: var(--header-text); text-decoration: underline; }
     </div>
     <div class="chart-container" id="chartContainer"></div>
     <div class="progress-container" id="progressList"></div>
-  </div><!-- POMODORO -->
+  </div>
+
+  <!-- POMODORO -->
   <div id="pomodoro" class="section">
     <h2>⏱️ مؤقت بومودورو</h2>
-
     <div class="pomodoro-box">
       <div class="pomodoro-status" id="pomoStatus">🍅 جاهز للبدء</div>
-
       <div class="pomodoro-timer" id="pomoTimer">25:00</div>
-
       <div class="pomodoro-controls">
         <button class="btn btn-success" onclick="startPomodoro()">▶️ بدء</button>
         <button class="btn btn-secondary" onclick="pausePomodoro()">⏸️ إيقاف مؤقت</button>
         <button class="btn" onclick="resetPomodoro()">🔄 إعادة</button>
       </div>
-
-      <div class="pomodoro-cycles" id="pomoCycles">
-        أنجزتي 0 دورات اليوم
-      </div>
+      <div class="pomodoro-cycles" id="pomoCycles">أنجزتي 0 دورات اليوم</div>
     </div>
-
     <div class="card" style="margin-top:20px; border-right-color:var(--success);">
       <h4 style="margin-bottom:8px;">📋 كيفية الاستخدام:</h4>
-
       <p style="color:var(--text-secondary); line-height:1.8; font-size:0.9rem;">
         1️⃣ اضغطي "بدء" لمذاكرة 25 دقيقة<br>
         2️⃣ ركزي تماماً في المذاكرة<br>
@@ -299,219 +305,85 @@ footer a { color: var(--header-text); text-decoration: underline; }
     </div>
   </div>
 
-
   <!-- NOTES -->
   <div id="notes" class="section">
     <h2>📝 ملاحظات يومية</h2>
-
-    <textarea
-      id="noteText"
-      placeholder="اكتبي ملاحظتك هنا..."
-      rows="4"
-      style="margin-bottom:8px;"
-    ></textarea>
-
-    <button class="btn" onclick="addNote()">
-      ➕ إضافة ملاحظة
-    </button>
-
+    <textarea id="noteText" placeholder="اكتبي ملاحظتك هنا..." rows="4" style="margin-bottom:8px;"></textarea>
+    <button class="btn" onclick="addNote()">➕ إضافة ملاحظة</button>
     <div class="notes-grid" id="notesList"></div>
   </div>
-
 
   <!-- QUIZ -->
   <div id="quiz" class="section">
     <h2>🧠 اختبر معلوماتك</h2>
-
     <div id="quizStart">
-
-      <p style="font-size:1rem; color:var(--text-secondary); margin-bottom:10px;">
-        اختاري المادة اللي عايزة تختبري نفسك فيها:
-      </p>
-
+      <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 10px;">اختاري المادة اللي عايزة تختبري نفسك فيها:</p>
       <div class="quiz-categories">
-
-        <!-- MATH -->
-        <div class="quiz-cat-card" onclick="startQuiz('math')">
-          <div class="cat-icon">📐</div>
-          <h4>رياضيات</h4>
-          <p>10 أسئلة في الجبر والهندسة</p>
-        </div>
-
-        <!-- CHEMISTRY -->
-        <div class="quiz-cat-card" onclick="startQuiz('chemistry')">
-          <div class="cat-icon">⚗️</div>
-          <h4>كيمياء</h4>
-          <p>10 أسئلة في الكيمياء العضوية وغير العضوية</p>
-        </div>
-
-        <!-- PHYSICS -->
-        <div class="quiz-cat-card" onclick="startQuiz('physics')">
-          <div class="cat-icon">⚡</div>
-          <h4>فيزياء</h4>
-          <p>أسئلة في الميكانيكا والكهرباء</p>
-        </div>
-
-        <!-- ENGLISH -->
-        <div class="quiz-cat-card" onclick="startQuiz('english')">
-          <div class="cat-icon">🇬🇧</div>
-          <h4>English</h4>
-          <p>Questions in Grammar & Vocabulary</p>
-        </div>
-
-        <!-- ARABIC -->
-        <div class="quiz-cat-card" onclick="startQuiz('arabic')">
-          <div class="cat-icon">📚</div>
-          <h4>عربي</h4>
-          <p>أسئلة في النحو والأدب</p>
-        </div>
-
-        <!-- BIOLOGY -->
-        <div class="quiz-cat-card" onclick="startQuiz('biology')">
-          <div class="cat-icon">🧬</div>
-          <h4>أحياء</h4>
-          <p>أسئلة في الأحياء</p>
-        </div>
-
-        <!-- HISTORY -->
-        <div class="quiz-cat-card" onclick="startQuiz('history')">
-          <div class="cat-icon">🏛️</div>
-          <h4>تاريخ</h4>
-          <p>أسئلة في التاريخ</p>
-        </div>
-
-        <!-- FRENCH -->
-        <div class="quiz-cat-card" onclick="startQuiz('french')">
-          <div class="cat-icon">🇫🇷</div>
-          <h4>فرنساوي</h4>
-          <p>أسئلة في اللغة الفرنسية</p>
-        </div>
-
-        <!-- GEOGRAPHY -->
-        <div class="quiz-cat-card" onclick="startQuiz('geography')">
-          <div class="cat-icon">🌍</div>
-          <h4>جغرافيا</h4>
-          <p>أسئلة في الجغرافيا</p>
-        </div>
-
+        <div class="quiz-cat-card" onclick="startQuiz('math')"><div class="cat-icon">📐</div><h4>رياضيات</h4><p>10 أسئلة في الجبر والهندسة</p></div>
+        <div class="quiz-cat-card" onclick="startQuiz('chemistry')"><div class="cat-icon">⚗️</div><h4>كيمياء</h4><p>10 أسئلة في الكيمياء العضوية وغير العضوية</p></div>
+        <div class="quiz-cat-card" onclick="startQuiz('physics')"><div class="cat-icon">⚡</div><h4>فيزياء</h4><p>10 أسئلة في الميكانيكا والكهرباء</p></div>
+        <div class="quiz-cat-card" onclick="startQuiz('english')"><div class="cat-icon">🇬🇧</div><h4>English</h4><p>10 questions in Grammar & Vocabulary</p></div>
       </div>
     </div>
-
-
-    <!-- QUIZ QUESTIONS -->
-    <div id="quizQuestion" style="display:none;">
-
-      <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin-bottom:16px;
-      ">
-
-        <span
-          id="quizCategoryBadge"
-          style="
-            padding:4px 12px;
-            border-radius:20px;
-            background:var(--light-bg);
-            font-size:0.8rem;
-            font-weight:600;
-          "
-        ></span>
-
-        <span
-          id="quizCounter"
-          style="
-            color:var(--text-muted);
-            font-size:0.85rem;
-          "
-        ></span>
-
+    <div id="quizQuestion" style="display: none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <span id="quizCategoryBadge" style="padding:4px 12px; border-radius:20px; background:var(--light-bg); font-size:0.8rem; font-weight:600;"></span>
+        <span id="quizCounter" style="color:var(--text-muted); font-size:0.85rem;"></span>
       </div>
-
-
-      <div
-        class="quiz-question"
-        id="questionText"
-      ></div>
-
-
-      <div
-        class="quiz-options"
-        id="optionsList"
-      ></div>
-
-
-      <p
-        id="quizFeedback"
-        style="
-          margin-top:16px;
-          font-weight:600;
-          min-height:24px;
-        "
-      ></p>
-
-
-      <button
-        class="btn btn-secondary"
-        id="nextBtn"
-        onclick="nextQuestion()"
-        style="
-          margin-top:12px;
-          display:none;
-        "
-      >
-        السؤال التالي ⬅️
-      </button>
-
+      <div class="quiz-question" id="questionText"></div>
+      <div class="quiz-options" id="optionsList"></div>
+      <p id="quizFeedback" style="margin-top: 16px; font-weight: 600; min-height: 24px;"></p>
+      <button class="btn btn-secondary" id="nextBtn" onclick="nextQuestion()" style="margin-top: 12px; display: none;">السؤال التالي ⬅️</button>
     </div>
-
-
-    <!-- QUIZ RESULT -->
-    <div id="quizResult" style="display:none;">
-
-      <div
-        class="quiz-score-big"
-        id="finalScore"
-      ></div>
-
-
-      <p
-        id="scoreMessage"
-        style="
-          font-size:1.1rem;
-          margin-bottom:8px;
-        "
-      ></p>
-
-
-      <p
-        id="scoreDetails"
-        style="
-          color:var(--text-muted);
-          font-size:0.9rem;
-          margin-bottom:20px;
-        "
-      ></p>
-
-
-      <button
-        class="btn"
-        onclick="backToQuizMenu()"
-      >
-        🔁 اختبار جديد
-      </button>
-
+    <div id="quizResult" style="display: none;">
+      <div class="quiz-score-big" id="finalScore"></div>
+      <p id="scoreMessage" style="font-size: 1.1rem; margin-bottom: 8px;"></p>
+      <p id="scoreDetails" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;"></p>
+      <button class="btn" onclick="backToQuizMenu()">🔁 اختبار جديد</button>
     </div>
-
   </div>
-
 
   <!-- TIPS -->
   <div id="tips" class="section">
     <h2>💡 نصائح ذهبية للمذاكرة</h2>
+    <div class="tip-card"><h4>🍅 تقنية البومودورو</h4><p>ذاكري 25 دقيقة متواصلة، ثم خذي راحة 5 دقائق. بعد 4 جولات، خذي راحة 15-30 دقيقة.</p></div>
+    <div class="tip-card"><h4>📝 طريقة كورنيل للملاحظات</h4><p>قسمي صفحة المذاكرة لثلاثة أجزاء: ملاحظات رئيسية، كلمات مفتاحية، وملخص.</p></div>
+    <div class="tip-card"><h4>😴 النوم مهم جداً</h4><p>النوم 7-8 ساعات يساعد على تثبيت المعلومات في الذاكرة طويلة المدى.</p></div>
+    <div class="tip-card"><h4>🎯 حددي أهداف يومية</h4><p>اكتبي 3 أهداف رئيسية يجب إنجازها كل يوم. التركيز على القليل يعطي نتائج أفضل.</p></div>
+    <div class="tip-card"><h4>🧘 خذي فواصل نشطة</h4><p>خلال الراحة، تحركي أو امشي أو افعلي تمارين خفيفة. الحركة تنشط الدورة الدموية للمخ.</p></div>
+    <div class="tip-card"><h4>📵 ابعدي الهاتف</h4><p>ضعي هاتفك في وضع الطيران أثناء المذاكرة. كل إشعار يقطع تركيزك ويحتاج 15 دقيقة لاستعادته.</p></div>
+  </div>
+</div>
 
-    <div class="tip-card"><script>
+<!-- SCHEDULE MODAL -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal">
+    <h3>📅 إضافة/تعديل مادة للجدول</h3>
+    <input type="text" id="modalSubject" placeholder="اسم المادة">
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-success btn-sm" onclick="saveScheduleCell()">حفظ</button>
+      <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteScheduleCell()">🗑️ حذف</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-box">
+    <h3>⚙️ الإعدادات</h3>
+    <div class="setting-row"><span>🌙 الوضع الليلي (Dark Mode)</span><div class="toggle-switch" id="darkToggle" onclick="toggleDarkMode()"></div></div>
+    <div class="setting-row"><span>🔔 التنبيهات الصوتية</span><div class="toggle-switch" id="settingsAudioToggle" onclick="toggleAudioFromSettings()"></div></div>
+    <div class="setting-row"><span>🗑️ مسح جميع البيانات</span><button class="btn btn-sm" style="background:var(--danger);" onclick="clearAllData()">مسح</button></div>
+    <div class="modal-actions" style="margin-top: 20px;"><button class="btn btn-secondary btn-sm" onclick="closeSettings()">إغلاق</button></div>
+  </div>
+</div>
+
+<footer>
+  <p>تم التطوير بواسطة <a href="https://github.com/KenzyAhmed137" target="_blank">Kenzy Ahmed</a> 💜</p>
+  <p style="margin-top: 8px; font-size: 0.8rem;">Student Study Planner v3.0 © 2026</p>
+</footer>
+<script>
 // ===================== DATA =====================
 let subjects = JSON.parse(localStorage.getItem('ssp_subjects')) || [];
 let tasks = JSON.parse(localStorage.getItem('ssp_tasks')) || [];
@@ -638,6 +510,7 @@ function updateDashboard() {
     document.getElementById('examCountdown').textContent = days > 0 ? '⏰ متبقي ' + days + ' يوم على الامتحان' : days === 0 ? '🎉 الامتحان اليوم! بالتوفيق!' : '';
   } else { document.getElementById('examCountdown').textContent = ''; }
 
+  // Upcoming tasks
   const upcoming = tasks.filter(t => !t.done && t.due).sort((a, b) => new Date(a.due) - new Date(b.due)).slice(0, 3);
   const upDiv = document.getElementById('upcomingTasks');
   if (upcoming.length === 0) {
@@ -649,6 +522,8 @@ function updateDashboard() {
       return '<p style="font-size:0.9rem; margin-bottom:6px;">📌 ' + escapeHtml(t.name) + ' <span style="' + urgent + '">(' + (daysLeft > 0 ? 'متبقي ' + daysLeft + ' يوم' : 'متأخرة!') + ')</span></p>';
     }).join('');
   }
+
+  // Check for urgent tasks
   const urgentTasks = tasks.filter(t => !t.done && t.due && Math.ceil((new Date(t.due) - new Date()) / (1000 * 60 * 60 * 24)) <= 1);
   if (urgentTasks.length > 0) playBeep();
 }
@@ -718,7 +593,9 @@ function deleteSubject(i) {
   }
   localStorage.setItem('ssp_subjects', JSON.stringify(subjects));
   renderSubjects(); updateDashboard();
-}// ===================== SCHEDULE =====================
+}
+
+// ===================== SCHEDULE =====================
 const days = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
 const times = ['8-10', '10-12', '12-2', '2-4', '4-6', '6-8'];
 let currentCell = null;
@@ -902,6 +779,7 @@ function deleteProgress(i) {
   renderProgress(); renderChart();
 }
 
+// SVG Bar Chart
 function renderChart() {
   const container = document.getElementById('chartContainer');
   if (progress.length === 0) { container.innerHTML = ''; return; }
@@ -909,11 +787,13 @@ function renderChart() {
   const maxV = Math.max(...progress.map(p => p.percent), 100);
   let svg = '<svg class="chart-svg" viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">';
   svg += '<rect width="' + w + '" height="' + h + '" fill="none"/>';
+  // Grid lines
   for (let i = 0; i <= 5; i++) {
     const y = pad + (h - pad * 2) * (1 - i / 5);
     svg += '<line x1="' + pad + '" y1="' + y + '" x2="' + (w - pad) + '" y2="' + y + '" stroke="var(--border-color)" stroke-width="1"/>';
     svg += '<text x="' + (pad - 10) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="var(--text-muted)">' + (i * 20) + '%</text>';
   }
+  // Bars
   progress.forEach((p, i) => {
     const x = pad + i * (barW + 20) + 10;
     const barH = (p.percent / maxV) * (h - pad * 2);
@@ -925,11 +805,13 @@ function renderChart() {
   });
   svg += '</svg>';
   container.innerHTML = svg;
-      }// ===================== POMODORO =====================
+}
+
+// ===================== POMODORO =====================
 let pomoTime = 25 * 60;
 let pomoInterval = null;
 let pomoRunning = false;
-let pomoMode = 'work';
+let pomoMode = 'work'; // work or break
 
 function formatTime(sec) {
   const m = Math.floor(sec / 60).toString().padStart(2, '0');
@@ -1043,256 +925,147 @@ function deleteNote(i) {
   }
   localStorage.setItem('ssp_notes', JSON.stringify(notes));
   renderNotes();
-                   }// ===================== QUIZ LOGIC =====================
-let currentQuiz = [];
-let currentQuizCategory = '';
-let currentQuestionIndex = 0;
-let quizScore = 0;
-let questionAnswered = false;
-
-const quizCategoryNames = {
-  math: '📐 رياضيات',
-  chemistry: '⚗️ كيمياء',
-  physics: '⚡ فيزياء',
-  arabic: '📚 عربي',
-  english: '🇬🇧 English',
-  biology: '🧬 أحياء',
-  history: '🏛️ تاريخ',
-  french: '🇫🇷 Français',
-  geography: '🌍 جغرافيا'
-};
-
-function startQuiz(category) {
-  if (!quizBanks[category] || quizBanks[category].length === 0) {
-    alert('لا توجد أسئلة متاحة لهذه المادة حالياً.');
-    return;
-  }
-
-  currentQuizCategory = category;
-  currentQuiz = [...quizBanks[category]];
-  currentQuestionIndex = 0;
-  quizScore = 0;
-  questionAnswered = false;
-
-  document.getElementById('quizStart').style.display = 'none';
-  document.getElementById('quizResult').style.display = 'none';
-  document.getElementById('quizQuestion').style.display = 'block';
-
-  showQuizQuestion();
 }
 
-function showQuizQuestion() {
-  const question = currentQuiz[currentQuestionIndex];
+// ===================== QUIZ BANKS =====================
+const quizBanks = {
+  math: [
+    { q: "ما هو حل المعادلة: 2x + 5 = 15؟", o: ["3", "5", "7", "10"], a: 1 },
+    { q: "ما هو محيط الدائرة التي نصف قطرها 7؟ (π ≈ 22/7)", o: ["22", "38", "44", "49"], a: 2 },
+    { q: "ما هو مجموع زوايا المضلع السداسي؟", o: ["540°", "720°", "900°", "1080°"], a: 1 },
+    { q: "إذا كان log₂(x) = 5، فما قيمة x؟", o: ["10", "16", "25", "32"], a: 3 },
+    { q: "ما هو المشتق الأول لـ f(x) = 3x² + 4x؟", o: ["6x + 4", "3x + 4", "6x² + 4", "x² + 4x"], a: 0 },
+    { q: "ما هو حل نظام المعادلات: x + y = 7 و x - y = 3؟", o: ["(4,3)", "(5,2)", "(6,1)", "(3,4)"], a: 1 },
+    { q: "ما هو cos(60°)؟", o: ["0", "0.5", "√3/2", "1"], a: 1 },
+    { q: "ما هو حجم المكعب الذي طول ضلعه 4 سم؟", o: ["16", "32", "48", "64"], a: 3 },
+    { q: "إذا كان tan(θ) = 3/4، فما قيمة sin(θ)؟", o: ["3/5", "4/5", "3/4", "5/3"], a: 0 },
+    { q: "ما هو ناتج تكامل 2x dx؟", o: ["x²", "x² + C", "2x²", "x + C"], a: 1 }
+  ],
+  chemistry: [
+    { q: "ما هو الرمز الكيميائي للصوديوم؟", o: ["So", "Na", "Sd", "No"], a: 1 },
+    { q: "كم عدد الإلكترونات في ذرة الأكسجين؟", o: ["6", "7", "8", "16"], a: 2 },
+    { q: "ما هو الغاز النبيل الأخف وزناً؟", o: ["النيون", "الهيليوم", "الأرجون", "الكريبتون"], a: 1 },
+    { q: "ما هو pH المحايد؟", o: ["0", "7", "14", "1"], a: 1 },
+    { q: "ما هو المركب الكيميائي للماء؟", o: ["HO", "H₂O", "OH", "H₂O₂"], a: 1 },
+    { q: "ما هو العدد الذري للكربون؟", o: ["4", "6", "8", "12"], a: 1 },
+    { q: "أي من التالي هو حمض قوي؟", o: ["CH₃COOH", "HCl", "H₂CO₃", "H₂O"], a: 1 },
+    { q: "ما هو الغاز المسؤول عن الاحتباس الحراري بشكل أساسي؟", o: ["O₂", "N₂", "CO₂", "H₂"], a: 2 },
+    { q: "كم عدد الروابط التساهمية في جزيء الميثان CH₄؟", o: ["2", "3", "4", "5"], a: 2 },
+    { q: "ما هو التفاعل الذي يُطلق فيه الحرارة؟", o: ["تفاعل ماص للحرارة", "تفاعل طارد للحرارة", "تفاعل عكسي", "تفاعل أكسدة"], a: 1 }
+  ],
+  physics: [
+    { q: "ما هي وحدة قياس القوة في النظام الدولي؟", o: ["واط", "نيوتن", "جول", "باسكال"], a: 1 },
+    { q: "ما هو التسارع الجاذبي على سطح الأرض (تقريباً)؟", o: ["8.9 m/s²", "9.8 m/s²", "10.2 m/s²", "11.0 m/s²"], a: 1 },
+    { q: "ما هو قانون نيوتن الثالث؟", o: ["F = ma", "لكل فعل رد فعل", "الجسم الساكن يبقى ساكناً", "a = F/m"], a: 1 },
+    { q: "ما هي سرعة الضوء في الفراغ؟", o: ["3 × 10⁶ m/s", "3 × 10⁸ m/s", "3 × 10¹⁰ m/s", "3 × 10⁴ m/s"], a: 1 },
+    { q: "ما هي وحدة قياس الطاقة الكهربائية المنزلية؟", o: ["واط", "أمبير", "كيلوواط ساعة", "فولت"], a: 2 },
+    { q: "إذا كانت كتلة جسم 10kg وتسارعه 2m/s²، فما القوة المؤثرة؟", o: ["5 N", "12 N", "20 N", "200 N"], a: 2 },
+    { q: "ما هو التردد الموجي الذي طوله 2m وسرعته 340m/s؟", o: ["85 Hz", "170 Hz", "340 Hz", "680 Hz"], a: 1 },
+    { q: "أي من التالي موصل جيد للكهرباء؟", o: ["الخشب", "المطاط", "النحاس", "البلاستيك"], a: 2 },
+    { q: "ما هو مبدأ باسكال؟", o: ["الضغط ينتقل بالتساوي", "الغازات تتمدد", "السوائل غير قابلة للانضغاط", "الحرارة تنتقل بالتوصيل"], a: 0 },
+    { q: "ما هي الطاقة الحركية لجسم كتلته 2kg وسرعته 5m/s؟", o: ["10 J", "25 J", "50 J", "100 J"], a: 1 }
+  ],
+  english: [
+    { q: "Choose the correct form: She ___ to school every day.", o: ["go", "goes", "going", "gone"], a: 1 },
+    { q: "What is the past participle of 'write'?", o: ["wrote", "written", "writing", "writed"], a: 1 },
+    { q: "Which word is a synonym of 'happy'?", o: ["sad", "joyful", "angry", "tired"], a: 1 },
+    { q: "Choose the correct sentence:", o: ["I have lived here since 2010.", "I have lived here for 2010.", "I have lived here from 2010.", "I have lived here at 2010."], a: 0 },
+    { q: "What does 'break the ice' mean?", o: ["Destroy something cold", "Start a conversation", "Make someone angry", "Win a game"], a: 1 },
+    { q: "Which is the correct comparative form of 'good'?", o: ["gooder", "more good", "better", "best"], a: 2 },
+    { q: "Identify the error: 'The news are very interesting today.'", o: ["news", "are", "very", "interesting"], a: 1 },
+    { q: "What is the plural of 'analysis'?", o: ["analyses", "analysises", "analysi", "analysis"], a: 0 },
+    { q: "Choose the correct preposition: I am interested ___ learning Arabic.", o: ["on", "at", "in", "for"], a: 2 },
+    { q: "Which sentence uses the passive voice?", o: ["She wrote the letter.", "The letter was written by her.", "She is writing the letter.", "She will write the letter."], a: 1 }
+  ]
+};
 
-  if (!question) {
-    finishQuiz();
-    return;
+let currentQ = 0, score = 0, shuffledQuestions = [], currentCategory = '';
+
+function startQuiz(cat) {
+  currentCategory = cat;
+  shuffledQuestions = shuffleArray([...quizBanks[cat]]);
+  currentQ = 0; score = 0;
+  document.getElementById('quizStart').style.display = 'none';
+  document.getElementById('quizQuestion').style.display = 'block';
+  document.getElementById('quizResult').style.display = 'none';
+  const catNames = { math: 'رياضيات', chemistry: 'كيمياء', physics: 'فيزياء', english: 'English' };
+  document.getElementById('quizCategoryBadge').textContent = catNames[cat];
+  showQuestion();
+}
+
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
+  return arr;
+}
 
-  questionAnswered = false;
-
-  document.getElementById('quizCategoryBadge').textContent =
-    quizCategoryNames[currentQuizCategory] || currentQuizCategory;
-
-  document.getElementById('quizCounter').textContent =
-    'السؤال ' + (currentQuestionIndex + 1) + ' من ' + currentQuiz.length;
-
-  document.getElementById('questionText').textContent = question.q;
-
-  const optionsList = document.getElementById('optionsList');
-  optionsList.innerHTML = '';
-
-  question.o.forEach((option, index) => {
-    const button = document.createElement('button');
-
-    button.className = 'quiz-option';
-    button.textContent = option;
-
-    button.onclick = function () {
-      selectQuizAnswer(index);
-    };
-
-    optionsList.appendChild(button);
-  });
-
+function showQuestion() {
+  const q = shuffledQuestions[currentQ];
+  document.getElementById('quizCounter').textContent = 'س ' + (currentQ + 1) + ' / ' + shuffledQuestions.length;
+  document.getElementById('questionText').textContent = q.q;
+  document.getElementById('optionsList').innerHTML = q.o.map((opt, i) => `
+    <div class="quiz-option" onclick="selectOption(${i}, this)">${opt}</div>
+  `).join('');
   document.getElementById('quizFeedback').textContent = '';
   document.getElementById('nextBtn').style.display = 'none';
 }
 
-function selectQuizAnswer(selectedIndex) {
-  if (questionAnswered) return;
-
-  questionAnswered = true;
-
-  const question = currentQuiz[currentQuestionIndex];
+function selectOption(idx, el) {
+  const q = shuffledQuestions[currentQ];
   const options = document.querySelectorAll('.quiz-option');
-
-  options.forEach((option, index) => {
-    option.disabled = true;
-
-    if (index === question.a) {
-      option.classList.add('correct');
-    }
-
-    if (index === selectedIndex && selectedIndex !== question.a) {
-      option.classList.add('wrong');
-    }
+  options.forEach((opt, i) => {
+    opt.style.pointerEvents = 'none';
+    if (i === q.a) opt.classList.add('correct');
   });
-
-  const feedback = document.getElementById('quizFeedback');
-
-  if (selectedIndex === question.a) {
-    quizScore++;
-    feedback.textContent = '✅ إجابة صحيحة! أحسنتِ 👏';
-    feedback.style.color = 'var(--success)';
-    playBeep();
+  if (idx === q.a) {
+    score++;
+    document.getElementById('quizFeedback').textContent = '✅ إجابة صحيحة! أحسنتِ!';
+    document.getElementById('quizFeedback').style.color = 'var(--success)';
   } else {
-    feedback.textContent =
-      '❌ إجابة غير صحيحة. الإجابة الصحيحة هي: ' +
-      question.o[question.a];
-
-    feedback.style.color = 'var(--danger)';
+    el.classList.add('wrong');
+    document.getElementById('quizFeedback').textContent = '❌ إجابة خاطئة. الإجابة الصحيحة مظللة بالأخضر.';
+    document.getElementById('quizFeedback').style.color = 'var(--danger)';
   }
-
-  const nextBtn = document.getElementById('nextBtn');
-  nextBtn.style.display = 'inline-block';
-
-  if (currentQuestionIndex === currentQuiz.length - 1) {
-    nextBtn.textContent = '🏆 عرض النتيجة';
-  } else {
-    nextBtn.textContent = 'السؤال التالي ⬅️';
-  }
+  document.getElementById('nextBtn').style.display = 'inline-block';
 }
 
 function nextQuestion() {
-  if (!questionAnswered) return;
-
-  if (currentQuestionIndex < currentQuiz.length - 1) {
-    currentQuestionIndex++;
-    showQuizQuestion();
-  } else {
-    finishQuiz();
-  }
+  currentQ++;
+  if (currentQ < shuffledQuestions.length) showQuestion();
+  else showResult();
 }
 
-function finishQuiz() {
+function showResult() {
   document.getElementById('quizQuestion').style.display = 'none';
   document.getElementById('quizResult').style.display = 'block';
-
-  const total = currentQuiz.length;
-  const percentage = Math.round((quizScore / total) * 100);
-
-  document.getElementById('finalScore').textContent =
-    quizScore + ' / ' + total;
-
-  let message = '';
-
-  if (percentage >= 90) {
-    message = '🌟 ممتاز جداً! مستواك رائع!';
-  } else if (percentage >= 75) {
-    message = '👏 أحسنتِ! نتيجة ممتازة، كملي كده!';
-  } else if (percentage >= 50) {
-    message = '💪 كويس! محتاجة مراجعة بسيطة لبعض النقاط.';
-  } else {
-    message = '📚 محتاجة تراجعي المادة أكتر، ومتقلقيش هتتحسني مع التدريب!';
-  }
-
-  document.getElementById('scoreMessage').textContent = message;
-
-  document.getElementById('scoreDetails').textContent =
-    'حصلتِ على ' + percentage + '% في ' +
-    (quizCategoryNames[currentQuizCategory] || currentQuizCategory);
-
-  playAlarm();
+  const pct = Math.round((score / shuffledQuestions.length) * 100);
+  document.getElementById('finalScore').textContent = score + '/' + shuffledQuestions.length;
+  let msg = '', details = '';
+  if (pct >= 90) { msg = '🌟 ممتاز! أداء رائع جداً!'; details = 'أنتِ تتقنين هذه المادة بشكل ممتاز. استمري!'; }
+  else if (pct >= 70) { msg = '👍 جيد جداً! استمري في التقدم!'; details = 'أداء قوي، لكن فيه مجال للتحسين. راجعي الأسئلة الخاطئة.'; }
+  else if (pct >= 50) { msg = '💪 لا بأس! تحتاجين مذاكرة أكثر.'; details = 'حاولي مراجعة المفاهيم الأساسية وحاولي مرة أخرى.'; }
+  else { msg = '📚 استمري في المذاكرة، ستتحسنين!'; details = 'لا تيأسي! المذاكرة المستمرة هي المفتاح. راجعي الدروس وحاولي مرة أخرى.'; }
+  document.getElementById('scoreMessage').textContent = msg;
+  document.getElementById('scoreDetails').textContent = details;
 }
 
 function backToQuizMenu() {
-  document.getElementById('quizResult').style.display = 'none';
-  document.getElementById('quizQuestion').style.display = 'none';
   document.getElementById('quizStart').style.display = 'block';
-
-  currentQuiz = [];
-  currentQuizCategory = '';
-  currentQuestionIndex = 0;
-  quizScore = 0;
-  questionAnswered = false;
+  document.getElementById('quizQuestion').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'none';
 }
 
-// ===================== INITIAL RENDER =====================
-function initializeApp() {
-  updateDashboard();
-  renderSubjects();
-  renderSchedule();
-  renderTasks();
-  renderProgress();
-  renderChart();
-  renderNotes();
-  updatePomoDisplay();
-
-  const examInput = document.getElementById('examDate');
-
-  if (examDate) {
-    examInput.value = examDate;
-  }
-
-  if (darkMode) {
-    document.body.classList.add('dark-mode');
-
-    const darkToggle = document.getElementById('darkToggle');
-
-    if (darkToggle) {
-      darkToggle.classList.add('on');
-    }
-  }
-
-  if (audioEnabled) {
-    const audioToggle = document.getElementById('audioToggle');
-    const settingsAudioToggle =
-      document.getElementById('settingsAudioToggle');
-
-    if (audioToggle) {
-      audioToggle.classList.add('on');
-    }
-
-    if (settingsAudioToggle) {
-      settingsAudioToggle.classList.add('on');
-    }
-  }
-      }// ===================== START APP =====================
-document.addEventListener('DOMContentLoaded', function () {
-  initializeApp();
-});
-
-// ===================== KEYBOARD SHORTCUTS =====================
-document.addEventListener('keydown', function (e) {
-  // الضغط على Escape يقفل النوافذ المفتوحة
-  if (e.key === 'Escape') {
-    closeModal();
-    closeSettings();
-  }
-});
-
-// الضغط خارج نافذة الجدول يقفلها
-document.getElementById('scheduleModal').addEventListener('click', function (e) {
-  if (e.target === this) {
-    closeModal();
-  }
-});
-
-// الضغط خارج الإعدادات يقفلها
-document.getElementById('settingsPanel').addEventListener('click', function (e) {
-  if (e.target === this) {
-    closeSettings();
-  }
-});
-
-// ===================== AUTO UPDATE =====================
-// تحديث لوحة التحكم كل دقيقة
-setInterval(function () {
-  updateDashboard();
-}, 60000);
-
+// ===================== INIT =====================
+updateDashboard();
+renderSubjects();
+renderSchedule();
+renderTasks();
+renderProgress();
+renderChart();
+renderNotes();
+updatePomoDisplay();
 </script>
-
 </body>
 </html>
